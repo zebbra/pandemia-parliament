@@ -272,6 +272,10 @@ io.on("connection", (socket) => {
   io.sockets.emit("clients", clients);
   
   // when socket disconnects, remove it from the list:
+  socket.on('redirect', msg => {
+    io.to(`${msg}`).emit('redirect', 'hey, the admin know you');
+  });
+
   socket.on("disconnect", () => {
       clients = clients.filter(c => c.id !== socket.id);
       console.log(`Client gone [id=${socket.id}]`);

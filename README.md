@@ -1,4 +1,19 @@
-![](https://lh4.googleusercontent.com/-PVw-ZUM9vV8/UuWeH51os0I/AAAAAAAAD6M/0Ikg7viJftQ/w1286-h566-no/hackathon-starter-logo.jpg)
+![](public/assets/logo_pandemia_parliament.png)
+
+
+# What's this about?
+
+Democracy as we know it is heavily impacted by covid-19. Decisions can’t be taken, yet it’s more crucial than ever that politicians can do their job. Some parliaments forbid the general population to meet, but they themselves need to meet in person, as there is just no other way.
+
+# What are we trying to achieve?
+
+We want to give the parliament the possibility to meet and vote on their business online. Digitalisation on the fast track, from physical being under one roof to simply doing the same work in a safe virtual space. Politicians need to lead by example, staying at home is the first crucial step!
+
+# Solution ShowCase
+
+We take the parliamentary process from the real-world and transfer it online. As simple as this. Politicians enter the online-lobby, are admitted by people that know them and join the online debate. They can vote on their businesses, do break out sessions with their parliamentary groups and come to the best possible decisions that make our society a great place to live in.
+The general public can join in from anywhere in the world and follow the process.
+For this hackathon we build a simple ShowCase that gives an impression how an online parliament could look like. All build on Open Source technology, protecting our sovereignty and guaranteeing a high level of security and transparency.
 
 
 Getting Started
@@ -70,7 +85,6 @@ listed below.
 - Note that after some of the steps in the Atlas UI, you may see a banner stating `We are deploying your changes`.  You will need to wait for the deployment to finish before using the DB in your application.
 
 
-**Note:** As an alternative to MongoDB Atlas, there is also [Compose](https://www.compose.io/).
 
 ---
 

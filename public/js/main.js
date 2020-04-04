@@ -92,7 +92,7 @@ $(document).ready(function() {
     });
 
     options.roomName = 'VersusVirusTeam1162-lobby'
-    // let api = new JitsiMeetExternalAPI(domain, options);
+    let api = new JitsiMeetExternalAPI(domain, options);
 
     $(".roster").on("click", ".roster-btn", function(event) {
       socket.emit('redirect', `${event.target.id}`)

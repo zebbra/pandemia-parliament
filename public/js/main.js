@@ -1,17 +1,27 @@
 const domain = ['open.meet.switch.ch',  'pp.paulson.ee', 'www.kuketz-meet.de', 'together.lambda-it.ch'][0];
 let options = {
-    roomName: 'VersusVirusTeam1162',
+    roomName: 'pandemic-parliament',
     width: 700,
     height: 500,
     parentNode: document.querySelector('#meet'),
     configOverwrite: {
-      requireDisplayName: true,
+      requireDisplayName: false,
       startWithAudioMuted: true,
       // filmStripOnly: true
     },
-    userInfo: { //?
-      email: 'email@jitsiexamplemail.com'
-  }
+    interfaceConfigOverwrite: {
+      TOOLBAR_BUTTONS: [
+        'microphone', 'camera', 'desktop', 'fullscreen',
+        'fodeviceselection', 'hangup', 'profile', 'chat',
+        'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
+        'videoquality', 'filmstrip', 'invite', 'stats',
+        'tileview',  'help', 'mute-everyone'
+      ],
+      // not used options:'closedcaptions', 'recording', 'feedback', 'shortcuts', 'videobackgroundblur',  'download',
+    }
+    // userInfo: { //?
+    //   email: 'email@jitsiexamplemail.com'
+    // }
 };
 
 // if (window.location.href)
@@ -62,8 +72,6 @@ function _mapUrlParams(queryString) {
 
 $(document).ready(function() {
 
-  alert('ready?')
-
   let urlParams = getUrlParams(window.location.search); // Assume location.search = "?a=1&b=2b2"
   //console.log(urlParams); // Prints { "a": 1, "b": "2b2" }
 
@@ -75,22 +83,25 @@ $(document).ready(function() {
     $(".roster").removeAttr("style");
   }
 
-  if (window.location.href.indexOf("visitor") > -1){
+  if (window.location.href.indexOf("visitor") > -1) {
     options = {
-      roomName: 'VersusVirusTeam1162',
-      width: 700,
-      height: 500,
+      roomName: 'pandemic-parliament',
+      width: 1200,
+      height: 600,
       parentNode: document.querySelector('#visitorview'),
       configOverwrite: {
         requireDisplayName: true,
         startWithAudioMuted: true,
+        startWithVideoMuted: true,
+        // startVideoMuted: 0,
         // filmStripOnly: true
       },
-      userInfo: { //?
-        email: 'email@jitsiexamplemail.com'
+      interfaceConfigOverwrite: {
+        TOOLBAR_BUTTONS: ['chat', 'raisehand', 'tileview'], // 'hangup'
+        SETTINGS_SECTIONS: [ ], // 'devices'
+        //filmStripOnly: true
+      }
     }
-  };
-    options.roomName = 'VersusVirusTeam116-visitor'
     let api = new JitsiMeetExternalAPI(domain, options);
   }
 
@@ -111,7 +122,7 @@ $(document).ready(function() {
       $('.roster').html(container);
     });
 
-    options.roomName = 'VersusVirusTeam1162-lobby'
+    options.roomName = 'pandemic-parliament-lobby'
     let api = new JitsiMeetExternalAPI(domain, options);
 
     $(".roster").on("click", ".roster-btn", function(event) {

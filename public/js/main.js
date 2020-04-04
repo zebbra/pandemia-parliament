@@ -76,7 +76,7 @@ $(document).ready(function() {
 
   if (window.location.href.indexOf("lobby") > -1){
     
-    const socketurl = window.location.protocol+'//'+window.location.hostname+':8000/lobby'
+    const socketurl = window.location.protocol+'//'+window.location.host+'/lobby'
 
     let socket = io.connect(socketurl);
 
@@ -189,8 +189,8 @@ $(document).ready(function() {
     });
 
     // Session socket.io 
-    const socketurl = window.location.protocol+'//'+window.location.hostname+':8000/session'
-    let socket = io.connect(socketurl);
+    const socketurl = window.location.protocol+'//'+window.location.host+'/session'
+    let socket = io.connect(socketurl, {transports: ['websocket']});
     socket.emit('joining', {username: username});
     socket.on('members', members => {
       console.log('members: ', members)

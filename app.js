@@ -15,7 +15,7 @@ const flash = require('express-flash');
 const path = require('path');
 const mongoose = require('mongoose');
 const passport = require('passport');
-const expressStatusMonitor = require('express-status-monitor');
+// const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const multer = require('multer');
 
@@ -68,7 +68,7 @@ app.set('host', process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0');
 app.set('port', process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-app.use(expressStatusMonitor());
+// app.use(expressStatusMonitor());
 app.use(compression());
 app.use(sass({
   src: path.join(__dirname, 'public'),
@@ -155,25 +155,16 @@ app.post('/account/password', passportConfig.isAuthenticated, userController.pos
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 
-
-
 /**
  * Scoket io
  */
-// const server = require('http').Server(app);
-// const io = require('socket.io').listen(server);
-//const server = require('http').Server(app);
-const io = require("socket.io").listen(8000);
+//const io = require('socket.io').listen(server);
+const server = require('http').Server(app);
+const io = require("socket.io")(server);
 let users = {};
 
 const lobbynsp = io.of('/lobby');
 const sessnp = io.of('/session');
-
-const nsp = io.of('/lobby');
-nsp.on('connection', function(socket){
-  console.log('someone connected');
-});
-nsp.emit('hi', 'everyone!');
 
 lobbynsp.on("connection", (socket) => {
   console.log(`Client connected [id=${socket.id}]`);
@@ -239,7 +230,7 @@ if (process.env.NODE_ENV === 'development') {
 /**
  * Start Express server.
  */
-app.listen(app.get('port'), () => {
+server.listen(app.get('port'), () => {
   console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env'));
   console.log('  Press CTRL-C to stop\n');
 });

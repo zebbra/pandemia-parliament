@@ -49,24 +49,6 @@ const passportConfig = require('./config/passport');
 const app = express();
 
 /**
- * Scoket io
- */
-const server = require('http').Server(app);
-const io = require('socket.io')(server);
-
-io.on('connection', (socket) => {
-  console.log('connection');
-
-  socket.emit('greet', { hello: 'Hey there browser!' });
-  socket.on('respond', (data) => {
-    console.log(data);
-  });
-  socket.on('disconnect', () => {
-    console.log('Socket disconnected');
-  });
-});
-
-/**
  * Connect to MongoDB.
  */
 mongoose.set('useFindAndModify', false);
@@ -150,8 +132,6 @@ app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/d3-parliame
 /**
  * Primary app routes.
  */
-
-
 app.get('/', welcomeController.index);
 app.get('/visitor', visitorController.index);
 app.get('/register', registerController.index);
@@ -271,6 +251,32 @@ app.get('/auth/pinterest/callback', passport.authorize('pinterest', { failureRed
 app.get('/auth/quickbooks', passport.authorize('quickbooks', { scope: ['com.intuit.quickbooks.accounting'], state: 'SOME STATE' }));
 app.get('/auth/quickbooks/callback', passport.authorize('quickbooks', { failureRedirect: '/login' }), (req, res) => {
   res.redirect(req.session.returnTo);
+});
+
+/**
+ * Scoket io
+ */
+// const server = require('http').Server(app);
+// const io = require('socket.io').listen(server);
+
+const io = require("socket.io").listen(8000);
+let clients = []
+
+io.on("connection", (socket) => {
+  console.log(`Client connected [id=${socket.id}]`);
+  // initialize this client's sequence number
+  const newClient = {
+    id: socket.id,
+  };
+  clients.push(newClient)
+  io.sockets.emit("clients", clients);
+  
+  // when socket disconnects, remove it from the list:
+  socket.on("disconnect", () => {
+      clients = clients.filter(c => c.id !== socket.id);
+      console.log(`Client gone [id=${socket.id}]`);
+      io.sockets.emit("clients", clients);
+    });
 });
 
 /**

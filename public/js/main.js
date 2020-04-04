@@ -23,16 +23,25 @@ const options = {
 //   })
 // }, 2000)
 
+
 $(document).ready(function() {
 
+  console.log(window.location.href)
   // Socket i.o
-  let socket = io.connect(window.location.href);
-  socket.on('greet', function (data) {
-    console.log(data);
-    socket.emit('respond', { message: 'Hey there, server!' });
-  });
-  
-  
+  if (window.location.href.indexOf("lobby") > -1){
+    let socket = io.connect('http://localhost:8000');
+
+    socket.on("clients", (clients) => {
+
+      let container = $('<div />');
+      for(i in clients) {
+        container.append('<div class="rosterItem id="'+clients[i].id+'" name="name'+clients[i].id+'" />'+clients[i].id);
+      }
+      $('.roster').html(container);
+
+    });
+  }
+
   $("#gotosession").click(function(){
     console.log('gotosession')
     window.location.href = "/session"
@@ -56,7 +65,6 @@ $(document).ready(function() {
     window.location.href = "/lobby"
     return false;
   });
-  
 
   if (window.location.href.indexOf("session") > -1) {
     let api = new JitsiMeetExternalAPI(domain, options);
@@ -84,7 +92,6 @@ $(document).ready(function() {
         }, 1000)
       }
     });
-  
   
     var parliament = d3.parliament();
     console.log("parliament d3", parliament)

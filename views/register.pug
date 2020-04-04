@@ -1,16 +1,20 @@
 extends layout
 
 block content
-  h2 VersusVirus - The Pandemia Parliament - Register
-  //- p.lead The Pandemia Parliament
-  - hr
-  .row
-    .col-md-6
+  .subpage
+    .container
+      a(href="/").menu
+        .logo
 
-  .row
-    .col-md-1
-      p Name
-        input(id='registration_name')
-  .row
-    .col-md-6
-      a.btn.btn-raised(href='#', role='button', id='after_registration') After Registration Click Here
+      h1.header-subpage.text-center The Pandemia Parliament
+      h2.subheader-subpage.text-center Please register to access the lobby
+  .main
+    .container
+
+      .row
+        .col-md-12.text-center
+          p Name: 
+            input(id='registration_name')
+
+          a.btn.btn-main.btn-raised(href='#', role='button', id='after_registration') Register
+  include partials/footer

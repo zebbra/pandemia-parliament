@@ -29,7 +29,8 @@ dotenv.config({ path: '.env.example' });
 /**
  * Controllers (route handlers).
  */
-const homeController = require('./controllers/home');
+const lobbyController = require('./controllers/lobby');
+const sessionController = require('./controllers/session');
 const userController = require('./controllers/user');
 const apiController = require('./controllers/api');
 const contactController = require('./controllers/contact');
@@ -43,6 +44,24 @@ const passportConfig = require('./config/passport');
  * Create Express server.
  */
 const app = express();
+
+/**
+ * Scoket io
+ */
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+
+io.on('connection', (socket) => {
+  console.log('connection');
+
+  socket.emit('greet', { hello: 'Hey there browser!' });
+  socket.on('respond', (data) => {
+    console.log(data);
+  });
+  socket.on('disconnect', () => {
+    console.log('Socket disconnected');
+  });
+});
 
 /**
  * Connect to MongoDB.
@@ -128,7 +147,8 @@ app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/d3-parliame
 /**
  * Primary app routes.
  */
-app.get('/', homeController.index);
+app.get('/', lobbyController.index);
+app.get('/session', sessionController.index);
 app.get('/login', userController.getLogin);
 app.post('/login', userController.postLogin);
 app.get('/logout', userController.logout);

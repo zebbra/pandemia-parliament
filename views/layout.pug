@@ -13,13 +13,8 @@ html
     block head
 
   body
-    include partials/header
-
     .container
-      include partials/flash
       block content
-
-    include partials/footer
 
     script(src='/js/lib/jquery.min.js')
     script(src='/js/lib/popper.min.js')
@@ -28,6 +23,7 @@ html
     script(src='https://d3js.org/d3.v4.min.js')
     script(src='/js/lib/d3-parliament.min.js')
     script(src='/js/main.js')
+    script(src='/socket.io/socket.io.js')
 
 
     //- // Google Analytics: change UA-XXXXX-X to be your site's ID

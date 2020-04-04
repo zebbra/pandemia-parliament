@@ -23,6 +23,13 @@ let api = new JitsiMeetExternalAPI(domain, options);
 
 $(document).ready(function() {
 
+  // Socket i.o
+  let socket = io.connect(window.location.href);
+  socket.on('greet', function (data) {
+    console.log(data);
+    socket.emit('respond', { message: 'Hey there, server!' });
+  });
+
   $(".nav-link").click(function(e){
     const action = $(event.target).text();
     console.log("action", action)

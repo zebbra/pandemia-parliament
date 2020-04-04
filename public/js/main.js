@@ -76,7 +76,8 @@ $(document).ready(function() {
 
   if (window.location.href.indexOf("lobby") > -1){
     
-    const socketurl = window.location.protocol+'//'+window.location.hostname+':8000'
+    const socketurl = window.location.protocol+'//'+window.location.hostname+':8000/lobby'
+
     let socket = io.connect(socketurl);
 
     socket.emit('joining', {username: username});
@@ -92,7 +93,7 @@ $(document).ready(function() {
     });
 
     options.roomName = 'VersusVirusTeam1162-lobby'
-    let api = new JitsiMeetExternalAPI(domain, options);
+    //let api = new JitsiMeetExternalAPI(domain, options);
 
     $(".roster").on("click", ".roster-btn", function(event) {
       socket.emit('redirect', `${event.target.id}`)
@@ -132,7 +133,20 @@ $(document).ready(function() {
   });
 
   if (window.location.href.indexOf("session") > -1) {
+
+    if (username != 'admin'){
+      options.interfaceConfigOverwrite = {
+        filmStripOnly: false,
+        TOOLBAR_BUTTONS: [
+        ],
+  
+        SETTINGS_SECTIONS: [ ],
+      }
+    }
+
     let api = new JitsiMeetExternalAPI(domain, options);
+    api.executeCommand('displayName', username);
+
     $(".nav-link").click(function(e){
       const action = $(event.target).text();
       console.log("action", action)
@@ -174,6 +188,31 @@ $(document).ready(function() {
         d3.select("svg").datum(d).call(parliament);
     });
 
-  }
+    // Session socket.io 
+    const socketurl = window.location.protocol+'//'+window.location.hostname+':8000/session'
+    let socket = io.connect(socketurl);
+    socket.emit('joining', {username: username});
+    socket.on('members', members => {
+      console.log('members: ', members)
+      let container = $('<div class="d-flex flex-column bd-highlight mb-3"/>');
+      for(clientId in members) {
+        if(username === 'admin'){
+          container.append('<button type="button" class="btn btn-light btn-sm member-btn m-1" id="' + clientId + '" name="' + members[clientId].username + '">' + members[clientId].username + '</button>');
+        } else {
+          container.append('<a href="#" class="btn btn-light btn-sm member-btn m-1 disabled" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' + members[clientId].username + '</a>');
+        }
+      }
+      $('.membersRoster').html(container);
+    });
 
+    socket.on("toggleMute", message => {
+      console.log('message: ', message)
+      api.executeCommand('toggleAudio');
+    })
+
+    $(".membersRoster").on("click", ".member-btn", function(event) {
+      socket.emit('toggleMute', `${event.target.id}`)
+      return false;
+    });
+  }
 });

@@ -1,0 +1,58 @@
+#!/usr/bin/python3
+import csv
+import json
+import requests
+
+def main():
+    print("starting...")
+    members = _from_csv()
+    members = _enrich(members)
+    with open('../public/data/members.json', 'w') as f:
+        json.dump(members, f)
+
+def _enrich(members):
+    valid_members = []
+    for member in members:
+        person_id = _enrich_one(member['identifier__parlamentdotch'])
+        if person_id is None:
+            continue
+
+        member['person_id'] = person_id
+        valid_members.append(member)
+
+    return valid_members
+
+def _enrich_one(parlamentch_number):
+    print('Looking up {}'.format(parlamentch_number))
+    uri = 'https://ws.parlament.ch/odata.svc/MemberCommittee?$filter=(Language eq \'EN\') and (PersonNumber eq {})'.format(parlamentch_number)
+    res = requests.get(uri, headers={'accept': 'application/json'})
+    results = res.json()['d']['results']
+    if len(results) >= 1:
+        id = results[0]['PersonIdCode']
+
+        return id
+    else:
+        print("Not found...")
+        return None
+
+def _from_csv():
+    members = []
+    seen_ids = set()
+    with open('switzerland-parlament.csv', 'r') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if len(row['end_date']) > 0:
+                continue
+
+            if row['id'] in seen_ids:
+                continue
+
+            seen_ids.add(row['id'])
+
+            members.append(
+                dict(row)
+            )
+    return members
+
+if __name__ == '__main__':
+    main()

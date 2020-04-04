@@ -1,13 +1,13 @@
 {
-  "name": "hackathon-starter",
-  "version": "6.0.0",
+  "name": "pandemic-parliament",
+  "version": "0.1.0",
   "description": "A boilerplate for Node.js web applications",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sahat/hackathon-starter.git"
+    "url": "https://github.com/zebbra/pandemic-parliament.git"
   },
   "license": "MIT",
-  "author": "Sahat Yalkabov",
+  "author": "the hack vs virus crew",
   "contributors": [
     "Yashar Fakhari (https://github.com/YasharF)"
   ],
@@ -43,7 +43,6 @@
     "googleapis": "^47.0.0",
     "instagram-node": "^0.5.8",
     "jquery": "^3.4.1",
-    "lastfm": "^0.9.3",
     "lob": "^6.0.6",
     "lodash": "^4.17.15",
     "lusca": "^1.6.1",

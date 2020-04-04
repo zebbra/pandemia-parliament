@@ -463,27 +463,10 @@ List of Packages
 | nyc                             | Coverage test.                                                          |
 | nodemailer                      | Node.js library for sending emails.                                     |
 | node-quickbooks                 | Quickbooks API library.                                                 |
-| passport                        | Simple and elegant authentication library for node.js.                  |
-| passport-facebook               | Sign-in with Facebook plugin.                                           |
-| passport-github                 | Sign-in with GitHub plugin.                                             |
-| passport-google-oauth           | Sign-in with Google plugin.                                             |
-| passport-instagram              | Sign-in with Instagram plugin.                                          |
-| passport-linkedin-oauth2        | Sign-in with LinkedIn plugin.                                           |
-| passport-local                  | Sign-in with Username and Password plugin.                              |
-| passport-openid                 | Sign-in with OpenId plugin.                                             |
-| passport-oauth                  | Allows you to set up your own OAuth 1.0a and OAuth 2.0 strategies.      |
-| passport-oauth2-refresh         | A library to refresh OAuth 2.0 access tokens using refresh tokens.      |
-| passport-snapchat               | Sign-in with Snapchat plugin.                                           |
-| passport-twitter                | Sign-in with Twitter plugin.                                            |
-| passport-twitch-new             | Sign-in with Twitch plugin.                                             |
-| paypal-rest-sdk                 | PayPal APIs library.                                                    |
+| passport                        | Simple and elegant authentication library for node.js.                  |                                                |
 | pug                             | Template engine for Express.                                            |
-| sinon                           | Test spies, stubs and mocks for JavaScript.                             |
-| stripe                          | Offical Stripe API library.                                             |
-| supertest                       | HTTP assertion library.                                                 |
-| tumblr.js                       | Tumblr API library.                                                     |
-| twilio                          | Twilio API library.                                                     |
-| twit                            | Twitter API library.                                                    |
+| sinon                           | Test spies, stubs and mocks for JavaScript.                             |                                          |
+| supertest                       | HTTP assertion library.                                                 |                                                 |
 | validator                       | A library of string validators and sanitizers.                          |
 
 Useful Tools and Resources

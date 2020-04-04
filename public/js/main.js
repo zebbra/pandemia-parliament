@@ -1,5 +1,5 @@
 const domain = ['open.meet.switch.ch',  'pp.paulson.ee', 'www.kuketz-meet.de', 'together.lambda-it.ch'][0];
-const options = {
+let options = {
     roomName: 'VersusVirusTeam1162',
     width: 700,
     height: 500,
@@ -62,6 +62,7 @@ function _mapUrlParams(queryString) {
 
 $(document).ready(function() {
 
+  alert('ready?')
 
   let urlParams = getUrlParams(window.location.search); // Assume location.search = "?a=1&b=2b2"
   //console.log(urlParams); // Prints { "a": 1, "b": "2b2" }
@@ -72,6 +73,25 @@ $(document).ready(function() {
   if (username === 'admin'){
     //console.log('you are the admin')
     $(".roster").removeAttr("style");
+  }
+
+  if (window.location.href.indexOf("visitor") > -1){
+    options = {
+      roomName: 'VersusVirusTeam1162',
+      width: 700,
+      height: 500,
+      parentNode: document.querySelector('#visitorview'),
+      configOverwrite: {
+        requireDisplayName: true,
+        startWithAudioMuted: true,
+        // filmStripOnly: true
+      },
+      userInfo: { //?
+        email: 'email@jitsiexamplemail.com'
+    }
+  };
+    options.roomName = 'VersusVirusTeam116-visitor'
+    let api = new JitsiMeetExternalAPI(domain, options);
   }
 
   if (window.location.href.indexOf("lobby") > -1){

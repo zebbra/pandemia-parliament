@@ -23,7 +23,7 @@ The easiest way to get started is to clone the repository:
 
 ```bash
 # Get the latest snapshot
-git clone https://github.com/sahat/hackathon-starter.git myproject
+git clone https://github.com/zebbra/pandemia-parlament.git pandemia-parlament
 
 # Change directory
 cd myproject

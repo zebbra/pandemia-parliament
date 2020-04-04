@@ -15,7 +15,7 @@ const flash = require('express-flash');
 const path = require('path');
 const mongoose = require('mongoose');
 const passport = require('passport');
-const expressStatusMonitor = require('express-status-monitor');
+// const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const multer = require('multer');
 
@@ -68,7 +68,7 @@ app.set('host', process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0');
 app.set('port', process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-app.use(expressStatusMonitor());
+// app.use(expressStatusMonitor());
 app.use(compression());
 app.use(sass({
   src: path.join(__dirname, 'public'),
@@ -155,36 +155,63 @@ app.post('/account/password', passportConfig.isAuthenticated, userController.pos
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 
-
-
 /**
  * Scoket io
  */
-// const server = require('http').Server(app);
-// const io = require('socket.io').listen(server);
+//const io = require('socket.io').listen(server);
+const server = require('http').Server(app);
+const io = require("socket.io")(server);
+let users = {};
 
-const io = require("socket.io").listen(8000);
-let clients = [];
+const lobbynsp = io.of('/lobby');
+const sessnp = io.of('/session');
 
-io.on("connection", (socket) => {
+lobbynsp.on("connection", (socket) => {
   console.log(`Client connected [id=${socket.id}]`);
   // initialize this client's sequence number
   const newClient = {
     id: socket.id,
   };
-  clients.push(newClient);
-  io.sockets.emit("clients", clients);
+  lobbynsp.emit('users', users);
+
+  socket.on('redirect', msg => {
+    lobbynsp.to(`${msg}`).emit('redirect', 'hey, the admin know you');
+  });
 
   // when socket disconnects, remove it from the list:
-  socket.on('redirect', msg => {
-    io.to(`${msg}`).emit('redirect', 'hey, the admin know you');
+  socket.on("disconnect", () => {
+    delete users[socket.id];
+    console.log(`Client gone [id=${socket.id}]`);
+    lobbynsp.emit('users', users);
+  });
+
+  socket.on('joining', (msg) => {
+    console.log(msg);
+    users[socket.id] = msg;
+    lobbynsp.emit('users', users);
+  });
+});
+
+let members = {};
+
+sessnp.on("connection", (socket) => {
+  console.log(`Client connected to session namespace [id=${socket.id}]`);
+  // initialize this client's sequence number
+  socket.on('joining', (msg) => {
+    console.log(msg);
+    members[socket.id] = msg;
+    sessnp.emit('members', members);
   });
 
   socket.on("disconnect", () => {
-    clients = clients.filter(c => c.id !== socket.id);
-    console.log(`Client gone [id=${socket.id}]`);
-    io.sockets.emit("clients", clients);
+    delete members[socket.id];
+    console.log(`Client gone form session [id=${socket.id}]`);
+    sessnp.emit('members', members);  });
+
+  socket.on('toggleMute', msg => {
+    sessnp.to(`${msg}`).emit('toggleMute', 'hey, lets mute you');
   });
+
 });
 
 /**
@@ -203,7 +230,7 @@ if (process.env.NODE_ENV === 'development') {
 /**
  * Start Express server.
  */
-app.listen(app.get('port'), () => {
+server.listen(app.get('port'), () => {
   console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env'));
   console.log('  Press CTRL-C to stop\n');
 });

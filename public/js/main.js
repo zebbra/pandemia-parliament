@@ -19,7 +19,7 @@ const options = {
     email: "email@jitsiexamplemail.com",
   },
 };
-
+const adminUid = 1346;
 // if (window.location.href)
 //
 
@@ -66,28 +66,75 @@ function _mapUrlParams(queryString) {
 }
 
 $(document).ready(() => {
-  const urlParams = getUrlParams(window.location.search); // Assume location.search = "?a=1&b=2b2"
-  console.log(urlParams); // Prints { "a": 1, "b": "2b2" }
+  const searchForMember = (query) => {
+    let matches = members.slice(0, 10);
+    if (query) {
+      const queryLower = query.toLowerCase();
+      matches = members
+        .filter(
+          (value) =>
+            value.given_name.toLowerCase().startsWith(queryLower) ||
+            value.family_name.toLowerCase().startsWith(queryLower)
+        )
+        .slice(0, 10);
+    }
+    const container = $("<div />");
+    for (matchIdx in matches) {
+      container.append(
+        `<div class="btn btn-light btn-sm roster-btn" id="${matches[matchIdx].id}">` +
+          `<img id="${matches[matchIdx].id}" src="https://www.parlament.ch/sitecollectionimages/profil/portrait-260/${matches[matchIdx].person_id}.jpg" />${matches[matchIdx].name}</div>`
+      );
+    }
+    $(".registration_members_list").html(container);
 
-  if (urlParams.hasOwnProperty("u") && urlParams.u === "admin") {
-    console.log("you are the admin");
+    $(".registration_members_list").on("click", ".roster-btn", (event) => {
+      const uid = event.target.id;
+      const member = members.find((value) => value.id === uid);
+      const username = member.name;
+      window.location.href = `/lobby?u=${username}&uid=${member.id}`;
+    });
+  };
+
+  let members = [];
+  $.getJSON("/data/members.json", (data) => {
+    members = data;
+    searchForMember();
+  });
+
+  const urlParams = getUrlParams(window.location.search); // Assume location.search = "?a=1&b=2b2"
+  // console.log(urlParams); // Prints { "a": 1, "b": "2b2" }
+
+  const username = urlParams.hasOwnProperty("u") ? urlParams.u : undefined;
+  const uid = urlParams.hasOwnProperty("uid") ? urlParams.uid : undefined;
+
+  console.log("using uid", uid);
+
+  if (uid === adminUid) {
+    // console.log('you are the admin')
     $(".roster").removeAttr("style");
   }
 
-  // Socket i.o
   if (window.location.href.indexOf("lobby") > -1) {
-    const socket = io.connect("http://localhost:8000");
-    socket.on("clients", (clients) => {
+    const socketurl = `${window.location.protocol}//${window.location.host}/lobby`;
+    const socket = io.connect(socketurl);
+
+    socket.emit("joining", { username });
+
+    socket.on("users", (users) => {
       const container = $("<div />");
-      for (i in clients) {
+      for (clientId in users) {
+        // if (clientId === socket.id) {
         container.append(
-          `<button type="button" class="btn btn-light btn-sm roster-btn" id="${clients[i].id}" name="name${clients[i].id}">${clients[i].id}</button>`
+          `<button type="button" class="btn btn-light btn-sm roster-btn" id="${clientId}" name="${users[clientId].username}">${users[clientId].username}</button>`
         );
+        // }
       }
       $(".roster").html(container);
     });
+
     options.roomName = "VersusVirusTeam1162-lobby";
     const api = new JitsiMeetExternalAPI(domain, options);
+    api.executeCommand("displayName", username);
 
     $(".roster").on("click", ".roster-btn", (event) => {
       socket.emit("redirect", `${event.target.id}`);
@@ -96,7 +143,8 @@ $(document).ready(() => {
 
     socket.on("redirect", (message) => {
       console.log("message: ", message);
-      window.location.href = "/session";
+      getUrlParams(window.location.search);
+      window.location.href = `/session?u=${username}&uid=${uid}`;
     });
   }
 
@@ -120,12 +168,29 @@ $(document).ready(() => {
 
   $("#after_registration").click(() => {
     console.log("after_registration");
-    window.location.href = "/lobby";
+    const username = $("#registration_name").val();
+    window.location.href = `/lobby?u=${username}`;
     return false;
   });
 
+  $("#registration_name").keyup((e) => {
+    const { value } = e.target;
+    searchForMember(value);
+  });
+
   if (window.location.href.indexOf("session") > -1) {
+    if (uid != adminUid) {
+      options.interfaceConfigOverwrite = {
+        filmStripOnly: false,
+        TOOLBAR_BUTTONS: [],
+
+        SETTINGS_SECTIONS: [],
+      };
+    }
+
     let api = new JitsiMeetExternalAPI(domain, options);
+    api.executeCommand("displayName", username);
+
     $(".nav-link").click((e) => {
       const action = $(event.target).text();
       console.log("action", action);
@@ -176,7 +241,40 @@ $(document).ready(() => {
 
     /* add the parliament to the page */
     d3.json("/data/parliament.json", (d) => {
-      d3.select("#d3-parliament-svg").datum(d).call(parliament);
+      d3.select("svg").datum(d).call(parliament);
+    });
+
+    // Session socket.io
+    const socketurl = `${window.location.protocol}//${window.location.host}/session`;
+    const socket = io.connect(socketurl, { transports: ["websocket"] });
+    socket.emit("joining", { username });
+    socket.on("members", (members) => {
+      console.log("members: ", members);
+      const container = $(
+        '<div class="d-flex flex-column bd-highlight mb-3"/>'
+      );
+      for (clientId in members) {
+        if (uid === adminUid) {
+          container.append(
+            `<button type="button" class="btn btn-light btn-sm member-btn m-1" id="${clientId}" name="${members[clientId].username}">${members[clientId].username}</button>`
+          );
+        } else {
+          container.append(
+            `<a href="#" class="btn btn-light btn-sm member-btn m-1 disabled" tabindex="-1" role="button" aria-disabled="true" id="${clientId}">${members[clientId].username}</a>`
+          );
+        }
+      }
+      $(".membersRoster").html(container);
+    });
+
+    socket.on("toggleMute", (message) => {
+      console.log("message: ", message);
+      api.executeCommand("toggleAudio");
+    });
+
+    $(".membersRoster").on("click", ".member-btn", (event) => {
+      socket.emit("toggleMute", `${event.target.id}`);
+      return false;
     });
   }
 });

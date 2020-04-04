@@ -2,35 +2,35 @@ extends layout
 
 block content
   include partials/header
-    .container
-      include partials/flash
-      h2 VersusVirus - The Pandemia Parliament
-      //- p.lead The Pandemia Parliament
-      - hr
-      .row
-        .col-md-2
-          h3 Left Section
-          p [Agenda]
-          p
-            a.btn.btn-raised(href='#', role='button') View details »
-        .col-md-8
-          div#meet(data-bar="foo")&attributes({'data-foo': 'bar'})
-        .col-md-2
-          h3 Right Section
-          p [Members online]
-          p
-            //a.btn.btn-raised(href='#', role='button') View details »
-      .row
-        .col-md-1
-          h3 Bottom
-          p [Controlls]
-          p
-            svg#d3-parliament-svg
+  .container
+    include partials/flash
+    h2 VersusVirus - The Pandemia Parliament
+    //- p.lead The Pandemia Parliament
+    - hr
+    .row
+      .col-md-2
+        h3 Left Section
+        p [Agenda]
+        p
+          a.btn.btn-raised(href='#', role='button') View details »
+      .col-md-8
+        div#meet(data-bar="foo")&attributes({'data-foo': 'bar'})
+      .col-md-2
+        h3 Right Section
+        p [Members online]
+        p
+          //a.btn.btn-raised(href='#', role='button') View details »
+    .row
+      .col-md-1
+        h3 Bottom
+        p [Controlls]
+        p
+          svg#d3-parliament-svg
 
 
 
-            doctype html
-    include partials/footer
+          doctype html
+  include partials/footer
 
 
     //- // Google Analytics: change UA-XXXXX-X to be your site's ID

@@ -1,22 +1,16 @@
 extends layout
 
 block content
-  h2 VersusVirus - The Pandemia Parliament - Lobby
+  h2 VersusVirus - The Pandemia Parliament
   //- p.lead The Pandemia Parliament
   - hr
   .row
+    .col-md-10
+        h3 Waiting Room
     .col-md-2
-        h3 Left Section
-        p 
-        p
-    .col-md-8
-        a.btn.btn-raised(href='#', role='button', name='gotosession') Go to session
-    .col-md-2
-      h3 Right Section
-      p 
-      p
+        a.btn.btn-raised(href='#', role='button', id='gotosession') Go to session
   .row
     .col-md-1
-      h3 Bottom
+      p Bottom
       p
       p

@@ -62,37 +62,37 @@ function _mapUrlParams(queryString) {
 
 $(document).ready(function() {
 
-  const socketurl = window.location.protocol+'//'+window.location.hostname+':8000'
-  console.log(window.location.protocol+'://'+window.location.hostname+':8000')
-  let socket = io.connect(socketurl);
 
   let urlParams = getUrlParams(window.location.search); // Assume location.search = "?a=1&b=2b2"
-  console.log(urlParams); // Prints { "a": 1, "b": "2b2" }
+  //console.log(urlParams); // Prints { "a": 1, "b": "2b2" }
 
   const username = urlParams.hasOwnProperty('u') ? urlParams.u : undefined;
-  console.log("using username", username);
+  //console.log("using username", username);
 
   if (username === 'admin'){
-    console.log('you are the admin')
+    //console.log('you are the admin')
     $(".roster").removeAttr("style");
   }
 
   if (window.location.href.indexOf("lobby") > -1){
+    
+    const socketurl = window.location.protocol+'//'+window.location.hostname+':8000'
+    let socket = io.connect(socketurl);
 
     socket.emit('joining', {username: username});
 
     socket.on('users', users => {
       let container = $('<div />');
       for(clientId in users) {
-        if (clientId === socket.id) {
-          container.append('<button type="button" class="btn btn-light btn-sm roster-btn" id="' + clientId + '" name="' + users[clientId].username + '">' + users[clientId].username + '</button>');
-        }
+        // if (clientId === socket.id) {
+        container.append('<button type="button" class="btn btn-light btn-sm roster-btn" id="' + clientId + '" name="' + users[clientId].username + '">' + users[clientId].username + '</button>');
+        // }
       }
       $('.roster').html(container);
     });
 
     options.roomName = 'VersusVirusTeam1162-lobby'
-    let api = new JitsiMeetExternalAPI(domain, options);
+    // let api = new JitsiMeetExternalAPI(domain, options);
 
     $(".roster").on("click", ".roster-btn", function(event) {
       socket.emit('redirect', `${event.target.id}`)
@@ -101,7 +101,8 @@ $(document).ready(function() {
 
     socket.on("redirect", message => {
       console.log('message: ', message)
-      window.location.href = "/session"
+      getUrlParams(window.location.search)
+      window.location.href = "/session?u="+username
     })
   }
 

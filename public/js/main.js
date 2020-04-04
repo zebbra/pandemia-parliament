@@ -15,7 +15,7 @@ const options = {
 };
 
 // if (window.location.href)
-// 
+//
 
 // setTimeout(() => {
 //   api.getAvailableDevices().then(devices => {
@@ -24,8 +24,8 @@ const options = {
 // }, 2000)
 
 /**
- * Accepts either a URL or querystring and returns an object associating 
- * each querystring parameter to its value. 
+ * Accepts either a URL or querystring and returns an object associating
+ * each querystring parameter to its value.
  *
  * Returns an empty object if no querystring parameters found.
  */
@@ -34,7 +34,7 @@ function getUrlParams(urlOrQueryString) {
     const queryString = urlOrQueryString.substring(i+1);
     if (queryString) {
       return _mapUrlParams(queryString);
-    } 
+    }
   }
   return {};
 }
@@ -46,8 +46,8 @@ function getUrlParams(urlOrQueryString) {
  * @param queryString {string} - The full querystring, without the leading '?'.
  */
 function _mapUrlParams(queryString) {
-  return queryString    
-    .split('&') 
+  return queryString
+    .split('&')
     .map(function(keyValueString) { return keyValueString.split('=') })
     .reduce(function(urlParams, [key, value]) {
       if (Number.isInteger(parseInt(value)) && parseInt(value) == value) {
@@ -59,27 +59,35 @@ function _mapUrlParams(queryString) {
     }, {});
 }
 
+
 $(document).ready(function() {
-  
+
   let urlParams = getUrlParams(window.location.search); // Assume location.search = "?a=1&b=2b2"
   console.log(urlParams); // Prints { "a": 1, "b": "2b2" }
 
-  if (urlParams.hasOwnProperty('u') && urlParams.u === 'admin'){
+  const username = urlParams.hasOwnProperty('u') ? urlParams.u : undefined;
+  console.log("using username", username);
+
+  if (username === 'admin'){
     console.log('you are the admin')
     $(".roster").removeAttr("style");
   }
-  
 
-  // Socket i.o
   if (window.location.href.indexOf("lobby") > -1){
     let socket = io.connect('http://localhost:8000');
-    socket.on("clients", (clients) => {
+
+    socket.emit('joining', {username: username});
+
+    socket.on('users', users => {
       let container = $('<div />');
-      for(i in clients) {
-        container.append('<button type="button" class="btn btn-light btn-sm roster-btn" id="'+clients[i].id+'" name="name'+clients[i].id+'">'+clients[i].id+'</button>');
+      for(clientId in users) {
+        if (clientId === socket.id) {
+          container.append('<button type="button" class="btn btn-light btn-sm roster-btn" id="' + clientId + '" name="' + users[clientId].username + '">' + users[clientId].username + '</button>');
+        }
       }
       $('.roster').html(container);
     });
+
     options.roomName = 'VersusVirusTeam1162-lobby'
     let api = new JitsiMeetExternalAPI(domain, options);
 
@@ -113,8 +121,9 @@ $(document).ready(function() {
   });
 
   $("#after_registration").click(function(){
-    console.log('after_registration')
-    window.location.href = "/lobby"
+    console.log('after_registration');
+    const username = $('#registration_name').val();
+    window.location.href = "/lobby?u=" + username;
     return false;
   });
 
@@ -150,12 +159,12 @@ $(document).ready(function() {
     parliament.width(600).height(400).innerRadiusCoef(0.4);
     parliament.enter.fromCenter(true).smallToBig(true);
     parliament.exit.toCenter(false).bigToSmall(true);
-  
+
     /* register event listeners */
     parliament.on("click", function(d) { alert("You clicked on a seat of " + d.party.name); });
     parliament.on("mouseover", function(d) { console.log("mouse on " + d.party.name); });
     parliament.on("mouseout", function(d) { console.log("mouse out of " + d.party.name); });
-  
+
     /* add the parliament to the page */
     d3.json("/data/parliament.json", function(d) {
         d3.select("svg").datum(d).call(parliament);

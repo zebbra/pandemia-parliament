@@ -165,6 +165,7 @@ app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userControl
 
 const io = require("socket.io").listen(8000);
 let clients = [];
+let users = {};
 
 io.on("connection", (socket) => {
   console.log(`Client connected [id=${socket.id}]`);
@@ -175,17 +176,26 @@ io.on("connection", (socket) => {
   clients.push(newClient);
   io.sockets.emit("clients", clients);
 
-  // when socket disconnects, remove it from the list:
   socket.on('redirect', msg => {
     io.to(`${msg}`).emit('redirect', 'hey, the admin know you');
   });
 
+  // when socket disconnects, remove it from the list:
   socket.on("disconnect", () => {
+    delete users[socket.id];
     clients = clients.filter(c => c.id !== socket.id);
     console.log(`Client gone [id=${socket.id}]`);
     io.sockets.emit("clients", clients);
+    io.sockets.emit('users', users);
+  });
+
+  socket.on('joining', (msg) => {
+    console.log(msg);
+    users[socket.id] = msg;
+    io.sockets.emit('users', users);
   });
 });
+
 
 /**
  * Error Handler.

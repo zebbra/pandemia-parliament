@@ -1,16 +1,30 @@
 extends layout
 
 block content
-  h2 VersusVirus - The Pandemia Parliament - Welcome
+  .menu
+    .logo
+
+  <div class="fullscreen-bg">
+    <video loop muted autoplay class="fullscreen-bg__video">
+        <source src="/assets/video.mp4" type="video/mp4">
+    </video>
+  </div>
+
+
+  h1.header.text-center Welcome to Pandemia Parliament
+
+  h2.text-center Which best describes the nature of your visit today?
   //- p.lead The Pandemia Parliament
   - hr
   .row
-    .col-md-10
-        a.btn.btn-raised(href='#', role='button', id='visitor_access') Visitor
-    .col-md-6
-        a.btn.btn-raised(href='#', role='button', id='parliamentarian_access') Parliamentarian
+    .col-md-6.text-center
+        a.btn.btn-landingpage.btn-raised(href='#', role='button', id='visitor_access') Visitor
+    .col-md-6.text-center
+        a.btn.btn-landingpage.btn-raised(href='#', role='button', id='parliamentarian_access') Parliamentarian
   .row
     .col-md-1
-      p Bottom
+      p 
       p
       p
+
+

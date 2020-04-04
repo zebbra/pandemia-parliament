@@ -39,6 +39,6 @@
       "id": "no-party",
       "legend": "Non-Inscrits",
       "name": "Non-Inscrits",
-      "seats": 7
+      "seats": ["name1", "name2", "name3", "name4", "name5", "name6", "name7"]
   }
 ]

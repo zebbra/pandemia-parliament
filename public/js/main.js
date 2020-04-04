@@ -15,7 +15,7 @@ const options = {
 };
 
 // if (window.location.href)
-// 
+//
 
 // setTimeout(() => {
 //   api.getAvailableDevices().then(devices => {
@@ -23,23 +23,87 @@ const options = {
 //   })
 // }, 2000)
 
+/**
+ * Accepts either a URL or querystring and returns an object associating
+ * each querystring parameter to its value.
+ *
+ * Returns an empty object if no querystring parameters found.
+ */
+function getUrlParams(urlOrQueryString) {
+  if ((i = urlOrQueryString.indexOf('?')) >= 0) {
+    const queryString = urlOrQueryString.substring(i+1);
+    if (queryString) {
+      return _mapUrlParams(queryString);
+    }
+  }
+  return {};
+}
+
+/**
+ * Helper function for `getUrlParams()`
+ * Builds the querystring parameter to value object map.
+ *
+ * @param queryString {string} - The full querystring, without the leading '?'.
+ */
+function _mapUrlParams(queryString) {
+  return queryString
+    .split('&')
+    .map(function(keyValueString) { return keyValueString.split('=') })
+    .reduce(function(urlParams, [key, value]) {
+      if (Number.isInteger(parseInt(value)) && parseInt(value) == value) {
+        urlParams[key] = parseInt(value);
+      } else {
+        urlParams[key] = decodeURI(value);
+      }
+      return urlParams;
+    }, {});
+}
+
 
 $(document).ready(function() {
 
-  console.log(window.location.href)
-  // Socket i.o
+
+  let urlParams = getUrlParams(window.location.search); // Assume location.search = "?a=1&b=2b2"
+  //console.log(urlParams); // Prints { "a": 1, "b": "2b2" }
+
+  const username = urlParams.hasOwnProperty('u') ? urlParams.u : undefined;
+  //console.log("using username", username);
+
+  if (username === 'admin'){
+    //console.log('you are the admin')
+    $(".roster").removeAttr("style");
+  }
+
   if (window.location.href.indexOf("lobby") > -1){
-    let socket = io.connect('http://localhost:8000');
+    
+    const socketurl = window.location.protocol+'//'+window.location.hostname+':8000'
+    let socket = io.connect(socketurl);
 
-    socket.on("clients", (clients) => {
+    socket.emit('joining', {username: username});
 
+    socket.on('users', users => {
       let container = $('<div />');
-      for(i in clients) {
-        container.append('<div class="rosterItem id="'+clients[i].id+'" name="name'+clients[i].id+'" />'+clients[i].id);
+      for(clientId in users) {
+        // if (clientId === socket.id) {
+        container.append('<button type="button" class="btn btn-light btn-sm roster-btn" id="' + clientId + '" name="' + users[clientId].username + '">' + users[clientId].username + '</button>');
+        // }
       }
       $('.roster').html(container);
-
     });
+
+    options.roomName = 'VersusVirusTeam1162-lobby'
+    let api = new JitsiMeetExternalAPI(domain, options);
+
+    $(".roster").on("click", ".roster-btn", function(event) {
+      socket.emit('redirect', `${event.target.id}`)
+      return false;
+    });
+
+    socket.on("redirect", message => {
+      console.log('message: ', message)
+      getUrlParams(window.location.search)
+      window.location.href = "/session?u="+username
+    })
   }
 
   $("#gotosession").click(function(){
@@ -61,8 +125,9 @@ $(document).ready(function() {
   });
 
   $("#after_registration").click(function(){
-    console.log('after_registration')
-    window.location.href = "/lobby"
+    console.log('after_registration');
+    const username = $('#registration_name').val();
+    window.location.href = "/lobby?u=" + username;
     return false;
   });
 
@@ -92,18 +157,18 @@ $(document).ready(function() {
         }, 1000)
       }
     });
-  
+
     var parliament = d3.parliament();
     console.log("parliament d3", parliament)
     parliament.width(600).height(400).innerRadiusCoef(0.4);
     parliament.enter.fromCenter(true).smallToBig(true);
     parliament.exit.toCenter(false).bigToSmall(true);
-  
+
     /* register event listeners */
     parliament.on("click", function(d) { alert("You clicked on a seat of " + d.party.name); });
     parliament.on("mouseover", function(d) { console.log("mouse on " + d.party.name); });
     parliament.on("mouseout", function(d) { console.log("mouse out of " + d.party.name); });
-  
+
     /* add the parliament to the page */
     d3.json("/data/parliament.json", function(d) {
         d3.select("svg").datum(d).call(parliament);

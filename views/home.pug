@@ -1,30 +1,25 @@
 extends layout
 
 block content
-  h1 VersusVirus
-  p.lead The Pandemia Parliament
-  hr
-  div#meet(data-bar="foo")&attributes({'data-foo': 'bar'})
-
-  hr
+  h2 VersusVirus - The Pandemia Parliament
+  //- p.lead The Pandemia Parliament
+  - hr
   .row
-    .col-md-6
-      h2 Heading
-      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+    .col-md-2
+      h3 Left Section
+      p [Agenda]
       p
         a.btn.btn-raised(href='#', role='button') View details »
-    .col-md-6
-      h2 Heading
-      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+    .col-md-8
+      div#meet(data-bar="foo")&attributes({'data-foo': 'bar'})
+    .col-md-2
+      h3 Right Section
+      p [Members online]
       p
-        a.btn.btn-raised(href='#', role='button') View details »
-    .col-md-6
-      h2 Heading
-      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+        //a.btn.btn-raised(href='#', role='button') View details »
+  .row
+    .col-md-1
+      h3 Bottom
+      p [Controlls]
       p
-        a.btn.btn-raised(href='#', role='button') View details »
-    .col-md-6
-      h2 Heading
-      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-      p
-        a.btn.btn-raised(href='#', role='button') View details »
+        svg#d3-parliament-svg

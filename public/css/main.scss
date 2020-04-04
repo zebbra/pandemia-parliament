@@ -99,7 +99,7 @@ $enable-gradients: true;
 * https://github.com/twbs/bootstrap/issues/25654
 */
 /* Styles in sm disposition and up */
-@media (min-width: 576px) and (max-width: 767px) {
+@media (min-width: 576px) and (max-width: 967px) {
   /* Solves bs4 bug */
   .navbar-expand-md > .container,
   .navbar-expand-lg > .container,
@@ -110,7 +110,7 @@ $enable-gradients: true;
 }
 
 /* Styles in md disposition and up */
-@media (min-width: 768px) and (max-width: 991px) {
+@media (min-width: 768px) and (max-width: 1391px) {
   /* Solves bs4 bug */
   .navbar-expand-lg > .container,
   .navbar-expand-xl > .container {
@@ -120,7 +120,7 @@ $enable-gradients: true;
 }
 
 /* Styles in lg disposition and up */
-@media (min-width: 992px) and (max-width: 1199px) {
+@media (min-width: 992px) and (max-width: 1399px) {
   /* Solves bs4 bug */
   .navbar-expand-xl > .container {
     padding-left: 15px !important;
@@ -181,4 +181,9 @@ $enable-gradients: true;
   &:hover, &:active {
     background-color: #503484;
   }
+}
+
+#d3-parliament-svg {
+  width: 800px;
+  height: 400px
 }

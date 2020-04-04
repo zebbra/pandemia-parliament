@@ -34,6 +34,9 @@ const sessionController = require('./controllers/session');
 const userController = require('./controllers/user');
 const apiController = require('./controllers/api');
 const contactController = require('./controllers/contact');
+const welcomeController = require('./controllers/welcome');
+const registerController = require('./controllers/register');
+const visitorController = require('./controllers/visitor');
 
 /**
  * API keys and Passport configuration.
@@ -147,7 +150,12 @@ app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/d3-parliame
 /**
  * Primary app routes.
  */
-app.get('/', lobbyController.index);
+
+
+app.get('/', welcomeController.index);
+app.get('/visitor', visitorController.index);
+app.get('/register', registerController.index);
+app.get('/lobby', lobbyController.index);
 app.get('/session', sessionController.index);
 app.get('/login', userController.getLogin);
 app.post('/login', userController.postLogin);

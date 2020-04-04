@@ -1,6 +1,6 @@
 /**
  * GET /
- * Home page.
+ * Lobby page.
  */
 exports.index = (req, res) => {
   res.render('lobby', {

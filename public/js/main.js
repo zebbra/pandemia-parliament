@@ -39,6 +39,25 @@ $(document).ready(function() {
     return false;
   });
 
+  $("#visitor_access").click(function(){
+    console.log('visitor_access')
+    window.location.href = "/visitor"
+    return false;
+  });
+
+  $("#parliamentarian_access").click(function(){
+    console.log('parliamentarian_access')
+    window.location.href = "/register"
+    return false;
+  });
+
+  $("#after_registration").click(function(){
+    console.log('after_registration')
+    window.location.href = "/lobby"
+    return false;
+  });
+  
+
   if (window.location.href.indexOf("session") > -1) {
     let api = new JitsiMeetExternalAPI(domain, options);
     $(".nav-link").click(function(e){

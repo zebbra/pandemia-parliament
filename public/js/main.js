@@ -62,6 +62,40 @@ function _mapUrlParams(queryString) {
 
 $(document).ready(function() {
 
+  const searchForMember = (query) => {
+    let matches = members.slice(0, 10);
+    if (query) {
+      const queryLower = query.toLowerCase();
+      matches = members.filter(
+        value =>
+          value['given_name'].toLowerCase().startsWith(queryLower) ||
+            value['family_name'].toLowerCase().startsWith(queryLower)
+      ).slice(0, 10);
+    }
+    let container = $('<div />');
+    for(matchIdx in matches) {
+      container.append(
+        '<div class="btn btn-light btn-sm roster-btn" id="' + matches[matchIdx]['id'] + '">' +
+          '<img id="' + matches[matchIdx]['id'] + '" src="https://www.parlament.ch/sitecollectionimages/profil/portrait-260/' + matches[matchIdx]['person_id'] + '.jpg" />' +
+          matches[matchIdx]['name'] +
+        '</div>'
+      );
+    }
+    $('.registration_members_list').html(container);
+
+    $(".registration_members_list").on("click", ".roster-btn", function(event) {
+      const uid = event.target.id;
+      const member = members.find(value => value['id'] === uid);
+      const username = member['name'];
+      window.location.href = "/lobby?u=" + username + '&uid=' + member['id'];
+    });
+  };
+
+  let members = [];
+  $.getJSON('/data/members.json', data => {
+    members = data;
+    searchForMember();
+  });
 
   let urlParams = getUrlParams(window.location.search); // Assume location.search = "?a=1&b=2b2"
   //console.log(urlParams); // Prints { "a": 1, "b": "2b2" }
@@ -74,10 +108,8 @@ $(document).ready(function() {
     $(".roster").removeAttr("style");
   }
 
-  if (window.location.href.indexOf("lobby") > -1){
-    
+  if (window.location.href.indexOf("lobby") > -1){    
     const socketurl = window.location.protocol+'//'+window.location.host+'/lobby'
-
     let socket = io.connect(socketurl);
 
     socket.emit('joining', {username: username});
@@ -130,6 +162,11 @@ $(document).ready(function() {
     const username = $('#registration_name').val();
     window.location.href = "/lobby?u=" + username;
     return false;
+  });
+
+  $("#registration_name").keyup(e => {
+    const value = e.target.value;
+    searchForMember(value);
   });
 
   if (window.location.href.indexOf("session") > -1) {

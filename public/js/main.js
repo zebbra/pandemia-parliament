@@ -62,6 +62,10 @@ function _mapUrlParams(queryString) {
 
 $(document).ready(function() {
 
+  const socketurl = window.location.protocol+'//'+window.location.hostname+':8000'
+  console.log(window.location.protocol+'://'+window.location.hostname+':8000')
+  let socket = io.connect(socketurl);
+
   let urlParams = getUrlParams(window.location.search); // Assume location.search = "?a=1&b=2b2"
   console.log(urlParams); // Prints { "a": 1, "b": "2b2" }
 
@@ -74,7 +78,6 @@ $(document).ready(function() {
   }
 
   if (window.location.href.indexOf("lobby") > -1){
-    let socket = io.connect('http://localhost:8000');
 
     socket.emit('joining', {username: username});
 

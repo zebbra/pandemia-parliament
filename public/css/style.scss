@@ -1,3 +1,7 @@
+body {
+  padding-top: 0;
+  background: #F5F5F5;
+}
 h1 {
     font-size: 4rem;
     font-family: 'Work Sans', sans-serif;
@@ -9,22 +13,49 @@ h2 {
     font-family: 'Work Sans', sans-serif;
     color: white;
     font-weight: 600;
-    margin-bottom: 5rem;
+}
+p, a {
+  font-size: 1.2rem;
+  font-family: 'Work Sans', sans-serif;
+  color: #356066;
+}
+a:hover {
+  color: #033840;
+}
+
+#jitsiConferenceFrame0 {
+  border: 20px!important;
+  border-color: white!important;
+  border-style: solid!important;
+}
+.main {
+  padding-top: 2rem;
 }
 .header {
     margin-bottom: 4rem;
     margin-top: 5rem;
   }
-  
+.header-subpage {
+  padding-top: 0rem;
+  margin-bottom: 2rem;
+}
+.subheader {
+  margin-bottom: 5rem;
+}
+.subheader-subpage {
+  padding-bottom: 5rem;
+}
 .logo {
     background-size: contain;
     height: 100px;
     background-image: url('../assets/logo.png');
     background-repeat: no-repeat;
-
-
 }
-  .btn-landingpage {
+.subpage {
+  background: #356066;
+}
+
+.btn-main {
     background: #356066 !important;
     font-size: 2rem;
     font-family: 'Work Sans', sans-serif;
@@ -32,7 +63,7 @@ h2 {
     color: white;
     border: white 0.5rem solid;
     width: 300px;
-  }
+}
 
 .fullscreen-bg {
     position: fixed;

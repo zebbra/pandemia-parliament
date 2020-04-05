@@ -271,23 +271,27 @@ $(document).ready(function() {
     let socket = io.connect(socketurl, {transports: ['websocket']});
     socket.emit('joining', {username: username, id: uid});
     socket.on('members', members_in_session => {
-      console.log('members: ', members_in_session)
-      let container = $('<div class="d-flex flex-column bd-highlight mb-3"/>');
-      for(clientId in members_in_session) {
-        const member = members_in_session[clientId];
-        const memberObj = members.find((m) => m.id == member.id);
-        if(uid === adminUid){
-          container.append('<button type="button" class="btn btn-light btn-sm member-btn m-1" id="' + clientId + '" name="' + member.username + '">' + member.username + '</button>');
-        } else {
-          container.append(
-            '<a href="#" class="btn btn-light btn-sm member-btn m-1 disabled" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' +
+      // as members may not have been loaded delay rendering... ...
+      setTimeout(() => {
+        console.log('members: ', members_in_session)
+        let container = $('<div class="d-flex flex-column bd-highlight mb-3"/>');
+        for (clientId in members_in_session) {
+          const member = members_in_session[clientId];
+          const memberObj = members.find((m) => m.id == member.id);
+          if (uid === adminUid) {
+            container.append('<button type="button" class="btn btn-light btn-sm member-btn m-1" id="' + clientId + '" name="' + member.username + '">' + member.username + '</button>');
+          } else {
+            container.append(
+              '<a href="#" class="btn btn-light btn-sm member-btn m-1 disabled" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' +
               memberImage(member.id, memberObj.person_id) +
               member.username +
-            '</a>');
+              '</a>');
+          }
         }
-      }
-      $('.membersRoster').html(container);
-    });
+        $('.membersRoster')
+          .html(container);
+      });
+    }, members === undefined ? 1000 : 0);
 
     socket.on("toggleMute", message => {
       console.log('message: ', message)

@@ -1,10 +1,18 @@
 extends layout
 
 block content
-  h2 VersusVirus - The Pandemia Parliament - Visitor
+  .subpage
+    .container
+      a(href="/").menu
+        .logo
+
+      h1.header-subpage.text-center The Pandemia Parliament
+      h2.subheader-subpage.text-center Welcome visitors!
   //- p.lead The Pandemia Parliament
   - hr
   .row
-    .col-md-10
-        p.lead Lifestream of Swiss Parliament EXTRAORDINARY SESSION
-        div#visitorview(data-bar="foo")&attributes({'data-foo': 'bar'})
+    .col-md-12.text-center
+      p.lead Lifestream of Swiss Parliament EXTRAORDINARY SESSION
+      div#visitorview(data-bar="foo")&attributes({'data-foo': 'bar'})
+
+  include partials/footer

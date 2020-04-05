@@ -1,8 +1,8 @@
 const domain = ['open.meet.switch.ch',  'pp.paulson.ee', 'www.kuketz-meet.de', 'together.lambda-it.ch'][0];
 let options = {
-    roomName: 'pandemic-parliament',
-    width: 700,
-    height: 500,
+    roomName: 'pandemia-parliament',
+    // width: 700,
+    // height: 500,
     parentNode: document.querySelector('#meet'),
     configOverwrite: {
       requireDisplayName: false,
@@ -24,14 +24,46 @@ let options = {
     // }
 };
 const adminUid = 1346
-// if (window.location.href)
-//
+/**
+ * Make an element's height equal to its width and sets an event handler to keep doing it
+ * @param {string} element - Selector of the element to make square
+ * @param {float} [ratio=1] - What ratio to keep between the width and height
+ * @param {integer} [minLimit=0] - Only square the element when the viewport width is above this limit
+ */
+function squareThis (element, ratio, minLimit)
+{
+    // First of all, let's square the element
+    square(ratio, minLimit);
 
-// setTimeout(() => {
-//   api.getAvailableDevices().then(devices => {
-//     console.log("DEBUG", devices)
-//   })
-// }, 2000)
+    // Now we'll add an event listener so it happens automatically
+    window.addEventListener('resize', function(event) {
+        square(ratio, minLimit);
+    });
+    
+    // This is just an inner function to help us keep DRY
+    function square(ratio, minLimit)
+    {
+        if(typeof(ratio) === "undefined")
+        {
+            ratio = 1;
+        }
+        if(typeof(minLimit) === "undefined")
+        {
+            minLimit = 0;
+        }
+        var viewportWidth = window.innerWidth;
+        
+        if(viewportWidth >= minLimit)
+        {
+            var newElementHeight = $(element).width() * ratio;
+            $(element).height(newElementHeight);
+        }
+        else
+        {
+            $(element).height('auto');
+        }
+    }
+}
 
 /**
  * Accepts either a URL or querystring and returns an object associating
@@ -128,7 +160,7 @@ $(document).ready(function() {
 
   if (window.location.href.indexOf("visitor") > -1) {
     options = {
-      roomName: 'pandemic-parliament',
+      roomName: 'pandemia-parliament',
       width: 1200,
       height: 600,
       parentNode: document.querySelector('#visitorview'),
@@ -149,6 +181,7 @@ $(document).ready(function() {
   }
 
   if (window.location.href.indexOf("lobby") > -1){
+    squareThis('#meet', 0.67);
 
     const socketurl = window.location.protocol+'//'+window.location.host+'/lobby'
     let socket = io.connect(socketurl);
@@ -165,7 +198,7 @@ $(document).ready(function() {
       $('.roster').html(container);
     });
 
-    options.roomName = 'pandemic-parliament-lobby'
+    options.roomName = 'pandemia-parliament-lobby'
     let api = new JitsiMeetExternalAPI(domain, options);
 
     $(".roster").on("click", ".roster-btn", function(event) {
@@ -211,6 +244,7 @@ $(document).ready(function() {
   });
 
   if (window.location.href.indexOf("session") > -1) {
+    squareThis('#meet', 0.67);
 
     if (uid != adminUid){
       options.interfaceConfigOverwrite = {

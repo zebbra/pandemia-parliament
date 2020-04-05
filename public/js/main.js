@@ -1,17 +1,27 @@
 const domain = ['open.meet.switch.ch',  'pp.paulson.ee', 'www.kuketz-meet.de', 'together.lambda-it.ch'][0];
-const options = {
-    roomName: 'VersusVirusTeam1162',
+let options = {
+    roomName: 'pandemic-parliament',
     width: 700,
     height: 500,
     parentNode: document.querySelector('#meet'),
     configOverwrite: {
-      requireDisplayName: true,
+      requireDisplayName: false,
       startWithAudioMuted: true,
       // filmStripOnly: true
     },
-    userInfo: { //?
-      email: 'email@jitsiexamplemail.com'
-  }
+    interfaceConfigOverwrite: {
+      TOOLBAR_BUTTONS: [
+        'microphone', 'camera', 'desktop', 'fullscreen',
+        'fodeviceselection', 'hangup', 'profile', 'chat',
+        'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
+        'videoquality', 'filmstrip', 'invite', 'stats',
+        'tileview',  'help', 'mute-everyone'
+      ],
+      // not used options:'closedcaptions', 'recording', 'feedback', 'shortcuts', 'videobackgroundblur',  'download',
+    }
+    // userInfo: { //?
+    //   email: 'email@jitsiexamplemail.com'
+    // }
 };
 const adminUid = 1346
 // if (window.location.href)
@@ -110,7 +120,30 @@ $(document).ready(function() {
     $(".roster").removeAttr("style");
   }
 
-  if (window.location.href.indexOf("lobby") > -1){    
+  if (window.location.href.indexOf("visitor") > -1) {
+    options = {
+      roomName: 'pandemic-parliament',
+      width: 1200,
+      height: 600,
+      parentNode: document.querySelector('#visitorview'),
+      configOverwrite: {
+        requireDisplayName: true,
+        startWithAudioMuted: true,
+        startWithVideoMuted: true,
+        // startVideoMuted: 0,
+        // filmStripOnly: true
+      },
+      interfaceConfigOverwrite: {
+        TOOLBAR_BUTTONS: ['chat', 'raisehand', 'tileview'], // 'hangup'
+        SETTINGS_SECTIONS: [ ], // 'devices'
+        //filmStripOnly: true
+      }
+    }
+    let api = new JitsiMeetExternalAPI(domain, options);
+  }
+
+  if (window.location.href.indexOf("lobby") > -1){
+    
     const socketurl = window.location.protocol+'//'+window.location.host+'/lobby'
     let socket = io.connect(socketurl);
 
@@ -126,9 +159,8 @@ $(document).ready(function() {
       $('.roster').html(container);
     });
 
-    options.roomName = 'VersusVirusTeam1162-lobby'
+    options.roomName = 'pandemic-parliament-lobby'
     let api = new JitsiMeetExternalAPI(domain, options);
-    api.executeCommand('displayName', username);
 
     $(".roster").on("click", ".roster-btn", function(event) {
       socket.emit('redirect', `${event.target.id}`)

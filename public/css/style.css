@@ -22,6 +22,10 @@ p, a {
 a:hover {
   color: #033840; }
 
+.lead {
+  padding-top: 30px;
+  padding-bottom: 20px; }
+
 #jitsiConferenceFrame0 {
   border: 20px !important;
   border-color: white !important;
@@ -36,13 +40,14 @@ a:hover {
 
 .header-subpage {
   padding-top: 0rem;
-  margin-bottom: 2rem; }
+  margin-bottom: 2rem;
+  margin-top: -40px; }
 
 .subheader {
-  margin-bottom: 5rem; }
+  margin-bottom: 100px; }
 
 .subheader-subpage {
-  padding-bottom: 5rem; }
+  padding-bottom: 4rem; }
 
 .logo {
   background-size: contain;

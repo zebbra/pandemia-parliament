@@ -104,6 +104,12 @@ function _mapUrlParams(queryString) {
 
 $(document).ready(function() {
 
+  const memberImage = (id, person_id) =>
+    `<img id="${id}" src="https://www.parlament.ch/sitecollectionimages/profil/portrait-260/${person_id}.jpg" />`;
+
+  const memberById = (id) =>
+    members.find((member) => member['id'] === id);
+
   const searchForMember = (query) => {
     let matches = members.slice(0, 10);
     if (query) {
@@ -118,7 +124,7 @@ $(document).ready(function() {
     for(matchIdx in matches) {
       container.append(
         '<div class="btn btn-light btn-sm roster-btn" id="' + matches[matchIdx]['id'] + '">' +
-          '<img id="' + matches[matchIdx]['id'] + '" src="https://www.parlament.ch/sitecollectionimages/profil/portrait-260/' + matches[matchIdx]['person_id'] + '.jpg" />' +
+          memberImage(matches[matchIdx]['id'], matches[matchIdx]['person_id']) +
           matches[matchIdx]['name'] +
         '</div>'
       );
@@ -245,7 +251,7 @@ $(document).ready(function() {
         filmStripOnly: false,
         TOOLBAR_BUTTONS: [
         ],
-  
+
         SETTINGS_SECTIONS: [ ],
       }
     }
@@ -294,18 +300,24 @@ $(document).ready(function() {
         d3.select("svg").datum(d).call(parliament);
     });
 
-    // Session socket.io 
+    // Session socket.io
     const socketurl = window.location.protocol+'//'+window.location.host+'/session'
     let socket = io.connect(socketurl, {transports: ['websocket']});
-    socket.emit('joining', {username: username});
-    socket.on('members', members => {
-      console.log('members: ', members)
+    socket.emit('joining', {username: username, id: uid});
+    socket.on('members', members_in_session => {
+      console.log('members: ', members_in_session)
       let container = $('<div class="d-flex flex-column bd-highlight mb-3"/>');
-      for(clientId in members) {
+      for(clientId in members_in_session) {
+        const member = members_in_session[clientId];
+        const memberObj = members.find((m) => m.id == member.id);
         if(uid === adminUid){
-          container.append('<button type="button" class="btn btn-light btn-sm member-btn m-1" id="' + clientId + '" name="' + members[clientId].username + '">' + members[clientId].username + '</button>');
+          container.append('<button type="button" class="btn btn-light btn-sm member-btn m-1" id="' + clientId + '" name="' + member.username + '">' + member.username + '</button>');
         } else {
-          container.append('<a href="#" class="btn btn-light btn-sm member-btn m-1 disabled" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' + members[clientId].username + '</a>');
+          container.append(
+            '<a href="#" class="btn btn-light btn-sm member-btn m-1 disabled" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' +
+              memberImage(member.id, memberObj.person_id) +
+              member.username +
+            '</a>');
         }
       }
       $('.membersRoster').html(container);

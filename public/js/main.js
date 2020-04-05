@@ -361,8 +361,6 @@ $(document).ready(function() {
     });
 
     // Session socket.io
-    const socketurl = window.location.protocol+'//'+window.location.host+'/session'
-    let socket = io.connect(socketurl, {transports: ['websocket']});
     socket.emit('joining', {username: username, id: uid});
     socket.on('members', members_in_session => {
       // as members may not have been loaded delay rendering... ...

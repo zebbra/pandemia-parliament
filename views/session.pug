@@ -1,42 +1,49 @@
 extends layout
 
 block content
-  include partials/header
-  .container
+  .subpage
+    .container
+      a(href="/").menu
+        .logo
     include partials/flash
-    h2 VersusVirus - The Pandemia Parliament
-    //- p.lead The Pandemia Parliament
-    - hr
-    .row
-      .col-md-2
-        h3 Left Section
-        p [Agenda]
-        p
-          a.btn.btn-raised(href='#', role='button') View details »
-      .col-md-8
-        div#meet(data-bar="foo")&attributes({'data-foo': 'bar'})
-      .col-md-2
-        h4 Members Online
-        div.membersRoster
-          //a.btn.btn-raised(href='#', role='button') View details »
-    .row
-      .col-md-2
-        h3 Bottom
-        p [Controlls]
-      .col-md-8.text-center
-        svg#d3-parliament-svg
-      .col-md-2
-        include partials/vote
+      h1.header-subpage.text-center Nationalratssaal
+      h2.subheader-subpage.text-center You are in a live session
+  .main
+    .container-fluid
+      include partials/controls
+    .container
+      .row
+        .col-md-2
+          h3 Left Section
+          p [Agenda]
+          p
+            a.btn.btn-raised(href='#', role='button') View details »
+        .col-md-8
+          div#meet(data-bar="foo")&attributes({'data-foo': 'bar'})
+        .col-md-2
+          h4 Members Online
+          div.membersRoster
+            //a.btn.btn-raised(href='#', role='button') View details »
+      .row
+        .col-md-2
+          h3 Bottom
+          p [Controlls]
+        .col-md-8.text-center
+          svg#d3-parliament-svg
+        .col-md-2
+          include partials/vote
 
-          doctype html
-  include partials/footer
 
 
-    //- // Google Analytics: change UA-XXXXX-X to be your site's ID
-    //- script.
-    //-   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    //-   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    //-   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    //-   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-    //-   ga('create', 'UA-XXXXX-X', 'auto');
-    //-   ga('send', 'pageview');
+            doctype html
+    include partials/footer
+
+
+      //- // Google Analytics: change UA-XXXXX-X to be your site's ID
+      //- script.
+      //-   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      //-   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      //-   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      //-   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      //-   ga('create', 'UA-XXXXX-X', 'auto');
+      //-   ga('send', 'pageview');

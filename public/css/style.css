@@ -49,6 +49,9 @@ a:hover {
 .subheader-subpage {
   padding-bottom: 4rem; }
 
+img {
+  width: 100%; }
+
 .logo {
   background-size: contain;
   height: 100px;

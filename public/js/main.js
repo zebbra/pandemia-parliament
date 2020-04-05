@@ -1,5 +1,11 @@
-const domain = ['open.meet.switch.ch',  'pp.paulson.ee', 'www.kuketz-meet.de', 'together.lambda-it.ch'][0];
+const domain = [
+  "open.meet.switch.ch",
+  "pp.paulson.ee",
+  "www.kuketz-meet.de",
+  "together.lambda-it.ch",
+][0];
 let options = {
+
     roomName: 'pandemia-parliament',
     // width: 700,
     // height: 500,
@@ -72,8 +78,8 @@ function squareThis (element, ratio, minLimit)
  * Returns an empty object if no querystring parameters found.
  */
 function getUrlParams(urlOrQueryString) {
-  if ((i = urlOrQueryString.indexOf('?')) >= 0) {
-    const queryString = urlOrQueryString.substring(i+1);
+  if ((i = urlOrQueryString.indexOf("?")) >= 0) {
+    const queryString = urlOrQueryString.substring(i + 1);
     if (queryString) {
       return _mapUrlParams(queryString);
     }
@@ -89,9 +95,9 @@ function getUrlParams(urlOrQueryString) {
  */
 function _mapUrlParams(queryString) {
   return queryString
-    .split('&')
-    .map(function(keyValueString) { return keyValueString.split('=') })
-    .reduce(function(urlParams, [key, value]) {
+    .split("&")
+    .map((keyValueString) => keyValueString.split("="))
+    .reduce((urlParams, [key, value]) => {
       if (Number.isInteger(parseInt(value)) && parseInt(value) == value) {
         urlParams[key] = parseInt(value);
       } else {
@@ -100,6 +106,7 @@ function _mapUrlParams(queryString) {
       return urlParams;
     }, {});
 }
+
 
 
 $(document).ready(function() {
@@ -114,14 +121,16 @@ $(document).ready(function() {
     let matches = members.slice(0, 10);
     if (query) {
       const queryLower = query.toLowerCase();
-      matches = members.filter(
-        value =>
-          value['given_name'].toLowerCase().startsWith(queryLower) ||
-            value['family_name'].toLowerCase().startsWith(queryLower)
-      ).slice(0, 10);
+      matches = members
+        .filter(
+          (value) =>
+            value.given_name.toLowerCase().startsWith(queryLower) ||
+            value.family_name.toLowerCase().startsWith(queryLower)
+        )
+        .slice(0, 10);
     }
-    let container = $('<div />');
-    for(matchIdx in matches) {
+    const container = $("<div />");
+    for (matchIdx in matches) {
       container.append(
         '<div class="btn btn-light btn-sm roster-btn" id="' + matches[matchIdx]['id'] + '">' +
           memberImage(matches[matchIdx]['id'], matches[matchIdx]['person_id']) +
@@ -129,32 +138,32 @@ $(document).ready(function() {
         '</div>'
       );
     }
-    $('.registration_members_list').html(container);
+    $(".registration_members_list").html(container);
 
-    $(".registration_members_list").on("click", ".roster-btn", function(event) {
+    $(".registration_members_list").on("click", ".roster-btn", (event) => {
       const uid = event.target.id;
-      const member = members.find(value => value['id'] === uid);
-      const username = member['name'];
-      window.location.href = "/lobby?u=" + username + '&uid=' + member['id'];
+      const member = members.find((value) => value.id === uid);
+      const username = member.name;
+      window.location.href = `/lobby?u=${username}&uid=${member.id}`;
     });
   };
 
   let members = [];
-  $.getJSON('/data/members.json', data => {
+  $.getJSON("/data/members.json", (data) => {
     members = data;
     searchForMember();
   });
 
-  let urlParams = getUrlParams(window.location.search); // Assume location.search = "?a=1&b=2b2"
-  //console.log(urlParams); // Prints { "a": 1, "b": "2b2" }
+  const urlParams = getUrlParams(window.location.search); // Assume location.search = "?a=1&b=2b2"
+  // console.log(urlParams); // Prints { "a": 1, "b": "2b2" }
 
-  const username = urlParams.hasOwnProperty('u') ? urlParams.u : undefined;
-  const uid = urlParams.hasOwnProperty('uid') ? urlParams.uid : undefined;
+  const username = urlParams.hasOwnProperty("u") ? urlParams.u : undefined;
+  const uid = urlParams.hasOwnProperty("uid") ? urlParams.uid : undefined;
 
   console.log("using uid", uid);
 
-  if (uid === adminUid){
-    //console.log('you are the admin')
+  if (uid === adminUid) {
+    // console.log('you are the admin')
     $(".roster").removeAttr("style");
   }
 
@@ -163,7 +172,7 @@ $(document).ready(function() {
       roomName: 'pandemia-parliament',
       width: 1200,
       height: 600,
-      parentNode: document.querySelector('#visitorview'),
+      parentNode: document.querySelector("#visitorview"),
       configOverwrite: {
         requireDisplayName: true,
         startWithAudioMuted: true,
@@ -172,13 +181,14 @@ $(document).ready(function() {
         // filmStripOnly: true
       },
       interfaceConfigOverwrite: {
-        TOOLBAR_BUTTONS: ['chat', 'raisehand', 'tileview'], // 'hangup'
-        SETTINGS_SECTIONS: [ ], // 'devices'
-        //filmStripOnly: true
-      }
-    }
-    let api = new JitsiMeetExternalAPI(domain, options);
+        TOOLBAR_BUTTONS: ["chat", "raisehand", "tileview"], // 'hangup'
+        SETTINGS_SECTIONS: [], // 'devices'
+        // filmStripOnly: true
+      },
+    };
+    const api = new JitsiMeetExternalAPI(domain, options);
   }
+
 
   if (window.location.href.indexOf("lobby") > -1){
     squareThis('#meet', 0.67);
@@ -186,118 +196,168 @@ $(document).ready(function() {
     const socketurl = window.location.protocol+'//'+window.location.host+'/lobby'
     let socket = io.connect(socketurl);
 
-    socket.emit('joining', {username: username});
+    socket.emit("joining", { username });
 
-    socket.on('users', users => {
-      let container = $('<div />');
-      for(clientId in users) {
+    socket.on("users", (users) => {
+      const container = $("<div />");
+      for (clientId in users) {
         // if (clientId === socket.id) {
-        container.append('<button type="button" class="btn btn-light btn-sm roster-btn" id="' + clientId + '" name="' + users[clientId].username + '">' + users[clientId].username + '</button>');
+        container.append(
+          `<button type="button" class="btn btn-light btn-sm roster-btn" id="${clientId}" name="${users[clientId].username}">${users[clientId].username}</button>`
+        );
         // }
       }
-      $('.roster').html(container);
+      $(".roster").html(container);
     });
+
 
     options.roomName = 'pandemia-parliament-lobby'
     let api = new JitsiMeetExternalAPI(domain, options);
 
-    $(".roster").on("click", ".roster-btn", function(event) {
-      socket.emit('redirect', `${event.target.id}`)
+    $(".roster").on("click", ".roster-btn", (event) => {
+      socket.emit("redirect", `${event.target.id}`);
       return false;
     });
 
-    socket.on("redirect", message => {
-      console.log('message: ', message)
-      getUrlParams(window.location.search)
-      window.location.href = "/session?u="+username+"&uid="+uid
-    })
+    socket.on("redirect", (message) => {
+      console.log("message: ", message);
+      getUrlParams(window.location.search);
+      window.location.href = `/session?u=${username}&uid=${uid}`;
+    });
   }
 
-  $("#gotosession").click(function(){
-    console.log('gotosession')
-    window.location.href = "/session"
+  $("#gotosession").click(() => {
+    console.log("gotosession");
+    window.location.href = "/session";
     return false;
   });
 
-  $("#visitor_access").click(function(){
-    console.log('visitor_access')
-    window.location.href = "/visitor"
+  $("#visitor_access").click(() => {
+    console.log("visitor_access");
+    window.location.href = "/visitor";
     return false;
   });
 
-  $("#parliamentarian_access").click(function(){
-    console.log('parliamentarian_access')
-    window.location.href = "/register"
+  $("#parliamentarian_access").click(() => {
+    console.log("parliamentarian_access");
+    window.location.href = "/register";
     return false;
   });
 
-  $("#after_registration").click(function(){
-    console.log('after_registration');
-    const username = $('#registration_name').val();
-    window.location.href = "/lobby?u=" + username;
+  $("#after_registration").click(() => {
+    console.log("after_registration");
+    const username = $("#registration_name").val();
+    window.location.href = `/lobby?u=${username}`;
     return false;
   });
 
-  $("#registration_name").keyup(e => {
-    const value = e.target.value;
+  $("#registration_name").keyup((e) => {
+    const { value } = e.target;
     searchForMember(value);
   });
 
   if (window.location.href.indexOf("session") > -1) {
+    // Session socket.io
+    const socketurl = `${window.location.protocol}//${window.location.host}/session`;
+    const socket = io.connect(socketurl, {
+      transports: ["websocket"],
+    });
+
+    $("#vote-yes").click(() => {
+      console.log("lol");
+      socket.emit("vote", {
+        session: "session id",
+        topic: "the current topic in the agenda",
+        voting: "yes",
+        member: "the member who voted",
+      });
+      return false;
+    });
     squareThis('#meet', 0.67);
 
-    if (uid != adminUid){
+    $("#vote-no").click(() => {
+      socket.emit("vote", {
+        session: "session id",
+        topic: "the current topic in the agenda",
+        voting: "no",
+        member: "the member who voted",
+      });
+      return false;
+    });
+
+    $("#vote-skip").click(() => {
+      socket.emit("vote", {
+        session: "session id",
+        topic: "the current topic in the agenda",
+        voting: "skip",
+        member: "the member who voted",
+      });
+      return false;
+    });
+
+    if (uid != adminUid) {
       options.interfaceConfigOverwrite = {
         filmStripOnly: false,
-        TOOLBAR_BUTTONS: [
-        ],
+        TOOLBAR_BUTTONS: [],
 
-        SETTINGS_SECTIONS: [ ],
-      }
+        SETTINGS_SECTIONS: [],
+      };
     }
 
     let api = new JitsiMeetExternalAPI(domain, options);
-    api.executeCommand('displayName', username);
+    api.executeCommand("displayName", username);
 
-    $(".nav-link").click(function(e){
+    $(".nav-link").click((e) => {
       const action = $(event.target).text();
-      console.log("action", action)
+      console.log("action", action);
       if (action === "Hangup") {
-        api.executeCommand('hangup');
+        api.executeCommand("hangup");
       } else if (action === "Request to Talk") {
-        api.executeCommand('avatarUrl', 'https://avatars0.githubusercontent.com/u/3671647');
-        alert('duly noted')
+        api.executeCommand(
+          "avatarUrl",
+          "https://avatars0.githubusercontent.com/u/3671647"
+        );
+        alert("duly noted");
       } else if (action === "Count") {
-        alert("we have " + api.getNumberOfParticipants() + " members online")
+        alert(`we have ${api.getNumberOfParticipants()} members online`);
       } else if (action === "Home") {
-        api.executeCommand('toggleFilmStrip');
-        api.executeCommand('toggleChat');
-        api.executeCommand('subject', 'Lets talk about ' + (Math.random()*1000).toFixed(0));
+        api.executeCommand("toggleFilmStrip");
+        api.executeCommand("toggleChat");
+        api.executeCommand(
+          "subject",
+          `Lets talk about ${(Math.random() * 1000).toFixed(0)}`
+        );
       } else if (action === "Change Room") {
-        api.executeCommand('hangup');
-        alert("you are being moved....")
-        $("#meet").empty()
+        api.executeCommand("hangup");
+        alert("you are being moved....");
+        $("#meet").empty();
         setTimeout(() => {
-          options.roomName = options.roomName + "2"
+          options.roomName += "2";
           api = new JitsiMeetExternalAPI(domain, options);
-        }, 1000)
+        }, 1000);
       }
     });
 
-    var parliament = d3.parliament();
-    console.log("parliament d3", parliament)
+    const parliament = d3.parliament();
+    console.log("parliament d3", parliament);
     parliament.width(600).height(400).innerRadiusCoef(0.4);
     parliament.enter.fromCenter(true).smallToBig(true);
     parliament.exit.toCenter(false).bigToSmall(true);
 
     /* register event listeners */
-    parliament.on("click", function(d) { alert("You clicked on a seat of " + d.party.name); });
-    parliament.on("mouseover", function(d) { console.log("mouse on " + d.party.name); });
-    parliament.on("mouseout", function(d) { console.log("mouse out of " + d.party.name); });
+    parliament.on("click", (d) => {
+      alert(`You clicked on a seat of ${d.party.name}`);
+    });
+    parliament.on("mouseover", (d) => {
+      console.log(`mouse on ${d.party.name}`);
+    });
+    parliament.on("mouseout", (d) => {
+      console.log(`mouse out of ${d.party.name}`);
+    });
 
     /* add the parliament to the page */
-    d3.json("/data/parliament.json", function(d) {
-        d3.select("svg").datum(d).call(parliament);
+    d3.json("/data/parliament.json", (d) => {
+      d3.select("svg").datum(d).call(parliament);
     });
 
     // Session socket.io
@@ -327,13 +387,13 @@ $(document).ready(function() {
       });
     }, members === undefined ? 1000 : 0);
 
-    socket.on("toggleMute", message => {
-      console.log('message: ', message)
-      api.executeCommand('toggleAudio');
-    })
+    socket.on("toggleMute", (message) => {
+      console.log("message: ", message);
+      api.executeCommand("toggleAudio");
+    });
 
-    $(".membersRoster").on("click", ".member-btn", function(event) {
-      socket.emit('toggleMute', `${event.target.id}`)
+    $(".membersRoster").on("click", ".member-btn", (event) => {
+      socket.emit("toggleMute", `${event.target.id}`);
       return false;
     });
   }

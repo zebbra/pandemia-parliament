@@ -6,7 +6,7 @@ block content
       a(href="/").menu
         .logo
     include partials/flash
-      h1.header-subpage.text-center Nationalratssaal
+      h1.text-center Nationalratssaal
       h2.subheader-subpage.text-center You are in a live session
   .main
     //.container-fluid
@@ -15,10 +15,11 @@ block content
       //include partials/controls
       .row
         .col-md-2
-          h3 Left Section
-          p [Agenda]
-          p
-            a.btn.btn-raised(href='#', role='button') View details »
+          h4 Agenda
+          .list-group
+            button.btn-sm.list-group-item.list-group-item-action.disabled Welcome
+            button.btn-sm.list-group-item.list-group-item-action.disabled Livestock summer grazing.
+            button.btn-smlist-group-item.list-group-item-action.active Funding of pademia parliament.
         .col-md-8
           div#meet(data-bar="foo")&attributes({'data-foo': 'bar'})
         .col-md-2

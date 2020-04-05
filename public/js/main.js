@@ -298,7 +298,7 @@ $(document).ready(function() {
     if (uid != adminUid) {
       options.interfaceConfigOverwrite = {
         filmStripOnly: false,
-        TOOLBAR_BUTTONS: [],
+        TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'raisehand'],
 
         SETTINGS_SECTIONS: [],
       };

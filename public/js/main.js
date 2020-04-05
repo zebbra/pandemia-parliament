@@ -23,7 +23,7 @@ let options = {
     //   email: 'email@jitsiexamplemail.com'
     // }
 };
-
+const adminUid = 1346
 // if (window.location.href)
 //
 
@@ -111,9 +111,11 @@ $(document).ready(function() {
   //console.log(urlParams); // Prints { "a": 1, "b": "2b2" }
 
   const username = urlParams.hasOwnProperty('u') ? urlParams.u : undefined;
-  //console.log("using username", username);
+  const uid = urlParams.hasOwnProperty('uid') ? urlParams.uid : undefined;
 
-  if (username === 'admin'){
+  console.log("using uid", uid);
+
+  if (uid === adminUid){
     //console.log('you are the admin')
     $(".roster").removeAttr("style");
   }
@@ -168,7 +170,7 @@ $(document).ready(function() {
     socket.on("redirect", message => {
       console.log('message: ', message)
       getUrlParams(window.location.search)
-      window.location.href = "/session?u="+username
+      window.location.href = "/session?u="+username+"&uid="+uid
     })
   }
 
@@ -204,7 +206,7 @@ $(document).ready(function() {
 
   if (window.location.href.indexOf("session") > -1) {
 
-    if (username != 'admin'){
+    if (uid != adminUid){
       options.interfaceConfigOverwrite = {
         filmStripOnly: false,
         TOOLBAR_BUTTONS: [
@@ -266,7 +268,7 @@ $(document).ready(function() {
       console.log('members: ', members)
       let container = $('<div class="d-flex flex-column bd-highlight mb-3"/>');
       for(clientId in members) {
-        if(username === 'admin'){
+        if(uid === adminUid){
           container.append('<button type="button" class="btn btn-light btn-sm member-btn m-1" id="' + clientId + '" name="' + members[clientId].username + '">' + members[clientId].username + '</button>');
         } else {
           container.append('<a href="#" class="btn btn-light btn-sm member-btn m-1 disabled" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' + members[clientId].username + '</a>');

@@ -2,6 +2,13 @@
 
 # Into
 
+A video might say more than lots of words
+
+[![YouTube-Video1](https://img.youtube.com/vi/6EYLnA8p7dA/0.jpg)](https://www.youtube.com/watch?v=6EYLnA8p7dA)
+
+[![YouTube-Video2](https://img.youtube.com/vi/TEjx7UMNAlc/0.jpg)](https://www.youtube.com/watch?v=TEjx7UMNAlc)
+
+
 ## What's this about?
 
 Democracy as we know it is heavily impacted by covid-19. Decisions can’t be taken, yet it’s more crucial than ever that politicians can do their job. Some parliaments forbid the general population to meet, but they themselves need to meet in person, as there is just no other way.
@@ -21,7 +28,6 @@ For this hackathon we build a simple ShowCase that gives an impression how an on
 
 # Acknolegment & Contributions
 
-We used the https://github.com/sahat/hackathon-starter boilerplate as base for this project
 
 ## Media about the topic
 
@@ -30,7 +36,17 @@ We used the https://github.com/sahat/hackathon-starter boilerplate as base for t
 
 ## Collaborators, Hackers, Thinkers
 
-* 
+| Who | Role | Wanna know more? |
+|---------------------|---------------------------|------------------------------------|
+| Kusi - Markus Roth | Ideator / Hacker | https://zebbra.ch / @MrChusiiii |
+| Felix Hoesch | Political Advisor | http://felix.hoesch.ch / @FelixZRH |
+| Clau Dermont | Political Advisor | http://claudermont.ch @claudermont |
+| Patrick Stählin | Mentor / Hacker | https://patrickstaehlin.ch / @thepacki |
+| Marek Paulson | Hacker | |
+| Jean-Henry Morin | Researcher | @jhmorin |
+| Martin Städeli | Advisor / Federal Council | |
+| Martin | | |
+| Claudio Sigenthaler | Hacker | |
 
 ## Supporters - advisors, mentors, coaches
 
@@ -61,4 +77,8 @@ npm install
 # Then simply start your app
 node app.js
 ```
+
+## Boilerplate used during the hackathon
+
+https://github.com/sahat/hackathon-starter
 

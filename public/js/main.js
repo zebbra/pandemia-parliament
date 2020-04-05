@@ -158,7 +158,7 @@ $(document).ready(function() {
     });
 
     options.roomName = 'pandemic-parliament-lobby'
-    // let api = new JitsiMeetExternalAPI(domain, options);
+    let api = new JitsiMeetExternalAPI(domain, options);
 
     $(".roster").on("click", ".roster-btn", function(event) {
       socket.emit('redirect', `${event.target.id}`)

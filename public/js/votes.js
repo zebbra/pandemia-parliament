@@ -1,3 +1,16 @@
+// credits to https://www.d3-graph-gallery.com/graph/pie_annotation.html thx guys :-)
+const state = () => ({
+  pieData: {
+    yes: 50,
+    no: 30,
+    skip: 20,
+  },
+});
+
+setData = (data) => {
+  state.pieData = data;
+};
+
 // set the dimensions and margins of the graph
 const width = 150;
 const height = 150;
@@ -17,7 +30,6 @@ function getColor(key) {
       break;
   }
 }
-// append the svg object to the div called 'my_dataviz'
 const svg = d3
   .select("#votes-pie")
   .append("svg")
@@ -26,16 +38,9 @@ const svg = d3
   .append("g")
   .attr("transform", `translate(${width / 2},${height / 2})`);
 
-// Create dummy data
-const data = {
-  yes: 50,
-  no: 30,
-  skip: 20,
-};
-
 // Compute the position of each group on the pie:
 const pie = d3.pie().value((d) => d.value);
-const data_ready = pie(d3.entries(data));
+const data_ready = pie(d3.entries(state().pieData));
 // Now I know that group A goes from 0 degrees to x degrees and so on.
 
 // shape helper to build arcs:
@@ -51,7 +56,7 @@ svg
   .attr("fill", (d) => getColor(d.data.key))
   .attr("stroke", "black")
   .style("stroke-width", "1px")
-  .style("opacity", 0.7);
+  .style("opacity", 0.9);
 
 // Now add the annotation. Use the centroid method to get the best coordinates
 svg
@@ -59,7 +64,7 @@ svg
   .data(data_ready)
   .enter()
   .append("text")
-  .text((d) => `${d.data.key} ${d.data.value}%`)
+  .text((d) => `${d.data.value}%`)
   .attr("transform", (d) => `translate(${arcGenerator.centroid(d)})`)
   .style("text-anchor", "middle")
-  .style("font-size", 17);
+  .style("font-size", 12);

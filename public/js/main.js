@@ -179,6 +179,43 @@ $(document).ready(() => {
   });
 
   if (window.location.href.indexOf("session") > -1) {
+    // Session socket.io
+    const socketurl = `${window.location.protocol}//${window.location.host}/session`;
+    const socket = io.connect(socketurl, {
+      transports: ["websocket"],
+    });
+
+    $("#vote-yes").click(() => {
+      console.log("lol");
+      socket.emit("vote", {
+        session: "session id",
+        topic: "the current topic in the agenda",
+        voting: "yes",
+        member: "the member who voted",
+      });
+      return false;
+    });
+
+    $("#vote-no").click(() => {
+      socket.emit("vote", {
+        session: "session id",
+        topic: "the current topic in the agenda",
+        voting: "no",
+        member: "the member who voted",
+      });
+      return false;
+    });
+
+    $("#vote-skip").click(() => {
+      socket.emit("vote", {
+        session: "session id",
+        topic: "the current topic in the agenda",
+        voting: "skip",
+        member: "the member who voted",
+      });
+      return false;
+    });
+
     if (uid != adminUid) {
       options.interfaceConfigOverwrite = {
         filmStripOnly: false,
@@ -244,10 +281,9 @@ $(document).ready(() => {
       d3.select("svg").datum(d).call(parliament);
     });
 
-    // Session socket.io
-    const socketurl = `${window.location.protocol}//${window.location.host}/session`;
-    const socket = io.connect(socketurl, { transports: ["websocket"] });
-    socket.emit("joining", { username });
+    socket.emit("joining", {
+      username,
+    });
     socket.on("members", (members) => {
       console.log("members: ", members);
       const container = $(

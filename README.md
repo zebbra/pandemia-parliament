@@ -23,13 +23,21 @@ For this hackathon we build a simple ShowCase that gives an impression how an on
 
 We used the https://github.com/sahat/hackathon-starter boilerplate as base for this project
 
+## Media about the topic
+
+* https://www.letemps.ch/suisse/democratie-numerique
+* https://www.republik.ch/2020/04/02/kinder-aus-lesbos-die-schweiz-sagt-nein-spitaeler-melden-kurz-arbeit-an-und-was-es-fuer-ein-digitales-parlament-braeuchte
+
 ## Collaborators, Hackers, Thinkers
 
-* ...
+* 
 
 ## Supporters - advisors, mentors, coaches
 
-* ...
+* Here's a screenshot from all the very nice people that supported and advised us during the hackathon :) Thanks a lot!
+
+![](public/assets/supporters.png)
+
 
 # Tech Stuff
 

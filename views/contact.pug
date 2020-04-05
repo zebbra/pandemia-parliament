@@ -1,26 +1,20 @@
 extends layout
 
 block content
-  .pb-2.mt-2.mb-4.border-bottom
-    h3 Contact Form
+  .subpage
+    .container
+      a(href="/").menu
+        .logo
 
-  form(method='POST')
-    input(type='hidden', name='_csrf', value=_csrf)
-    if (unknownUser)
-      .form-group.row
-        label(class='col-md-2 col-form-label font-weight-bold', for='name') Name
-        .col-md-8
-          input.form-control(type='text', name='name', id='name', autocomplete='name', autofocus, required)
-      .form-group.row
-        label(class='col-md-2 col-form-label font-weight-bold', for='email') Email
-        .col-md-8
-          input.form-control(type='email', name='email', id='email', autocomplete='email', required)
-    .form-group.row
-      label(class='col-md-2 col-form-label font-weight-bold', for='message') Please describe the issue or your suggestion
-      .col-md-8
-        textarea.form-control(name='message', id='message', rows='7', autofocus=(!unknownUser).toString(), required)
-    .form-group
-      .offset-md-2.col-md-8.p-1
-        button.btn.btn-primary(type='submit')
-          i.far.fa-envelope.fa-sm
-          | Send
+      h1.header-subpage.text-center About us / Contact
+      h2.subheader-subpage.text-center We are looking forward to your message!
+  //- p.lead The Pandemia Parliament
+  - hr
+  .row
+    .col-md-12.text-center
+      h3 Kontakt
+      p <a href="https://twitter.com/PandemiaParl">https://twitter.com/PandemiaParl</a>
+      p <a href="mailto:contact@pandemia-parliament.ch">contact@pandemia-parliament.ch</a>
+      h3 About us
+      p <a href="https://devpost.com/software/pandemia-parliament-ch">https://devpost.com/software/pandemia-parliament-ch</a>
+  include partials/footer

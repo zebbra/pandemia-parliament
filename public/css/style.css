@@ -71,7 +71,8 @@ img {
   padding: 1rem;
   color: white;
   border: white 0.5rem solid;
-  width: 300px; }
+  width: 300px;
+  text-decoration: none; }
 
 .fullscreen-bg {
   position: fixed;

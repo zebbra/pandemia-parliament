@@ -16,6 +16,8 @@ We take the parliamentary process from the real-world and transfer it online. As
 The general public can join in from anywhere in the world and follow the process.
 For this hackathon we build a simple ShowCase that gives an impression how an online parliament could look like. All build on Open Source technology, protecting our sovereignty and guaranteeing a high level of security and transparency.
 
+![](public/assets/screenshot1.png)
+
 
 # Acknolegment & Contributions
 

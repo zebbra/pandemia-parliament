@@ -5,53 +5,71 @@ const domain = [
   "together.lambda-it.ch",
 ][0];
 let options = {
-  roomName: "pandemic-parliament",
-  width: 700,
-  height: 500,
-  parentNode: document.querySelector("#meet"),
-  configOverwrite: {
-    requireDisplayName: false,
-    startWithAudioMuted: true,
-    // filmStripOnly: true
-  },
-  interfaceConfigOverwrite: {
-    TOOLBAR_BUTTONS: [
-      "microphone",
-      "camera",
-      "desktop",
-      "fullscreen",
-      "fodeviceselection",
-      "hangup",
-      "profile",
-      "chat",
-      "livestreaming",
-      "etherpad",
-      "sharedvideo",
-      "settings",
-      "raisehand",
-      "videoquality",
-      "filmstrip",
-      "invite",
-      "stats",
-      "tileview",
-      "help",
-      "mute-everyone",
-    ],
-    // not used options:'closedcaptions', 'recording', 'feedback', 'shortcuts', 'videobackgroundblur',  'download',
-  },
-  // userInfo: { //?
-  //   email: 'email@jitsiexamplemail.com'
-  // }
-};
-const adminUid = 1346;
-// if (window.location.href)
-//
 
-// setTimeout(() => {
-//   api.getAvailableDevices().then(devices => {
-//     console.log("DEBUG", devices)
-//   })
-// }, 2000)
+    roomName: 'pandemia-parliament',
+    // width: 700,
+    // height: 500,
+    parentNode: document.querySelector('#meet'),
+    configOverwrite: {
+      requireDisplayName: false,
+      startWithAudioMuted: true,
+      // filmStripOnly: true
+    },
+    interfaceConfigOverwrite: {
+      TOOLBAR_BUTTONS: [
+        'microphone', 'camera', 'desktop', 'fullscreen',
+        'fodeviceselection', 'hangup', 'profile', 'chat',
+        'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
+        'videoquality', 'filmstrip', 'invite', 'stats',
+        'tileview',  'help', 'mute-everyone'
+      ],
+      // not used options:'closedcaptions', 'recording', 'feedback', 'shortcuts', 'videobackgroundblur',  'download',
+    }
+    // userInfo: { //?
+    //   email: 'email@jitsiexamplemail.com'
+    // }
+};
+const adminUid = 1346
+/**
+ * Make an element's height equal to its width and sets an event handler to keep doing it
+ * @param {string} element - Selector of the element to make square
+ * @param {float} [ratio=1] - What ratio to keep between the width and height
+ * @param {integer} [minLimit=0] - Only square the element when the viewport width is above this limit
+ */
+function squareThis (element, ratio, minLimit)
+{
+    // First of all, let's square the element
+    square(ratio, minLimit);
+
+    // Now we'll add an event listener so it happens automatically
+    window.addEventListener('resize', function(event) {
+        square(ratio, minLimit);
+    });
+    
+    // This is just an inner function to help us keep DRY
+    function square(ratio, minLimit)
+    {
+        if(typeof(ratio) === "undefined")
+        {
+            ratio = 1;
+        }
+        if(typeof(minLimit) === "undefined")
+        {
+            minLimit = 0;
+        }
+        var viewportWidth = window.innerWidth;
+        
+        if(viewportWidth >= minLimit)
+        {
+            var newElementHeight = $(element).width() * ratio;
+            $(element).height(newElementHeight);
+        }
+        else
+        {
+            $(element).height('auto');
+        }
+    }
+}
 
 /**
  * Accepts either a URL or querystring and returns an object associating
@@ -89,7 +107,16 @@ function _mapUrlParams(queryString) {
     }, {});
 }
 
-$(document).ready(() => {
+
+
+$(document).ready(function() {
+
+  const memberImage = (id, person_id) =>
+    `<img id="${id}" src="https://www.parlament.ch/sitecollectionimages/profil/portrait-260/${person_id}.jpg" />`;
+
+  const memberById = (id) =>
+    members.find((member) => member['id'] === id);
+
   const searchForMember = (query) => {
     let matches = members.slice(0, 10);
     if (query) {
@@ -105,8 +132,10 @@ $(document).ready(() => {
     const container = $("<div />");
     for (matchIdx in matches) {
       container.append(
-        `<div class="btn btn-light btn-sm roster-btn" id="${matches[matchIdx].id}">` +
-          `<img id="${matches[matchIdx].id}" src="https://www.parlament.ch/sitecollectionimages/profil/portrait-260/${matches[matchIdx].person_id}.jpg" />${matches[matchIdx].name}</div>`
+        '<div class="btn btn-light btn-sm roster-btn" id="' + matches[matchIdx]['id'] + '">' +
+          memberImage(matches[matchIdx]['id'], matches[matchIdx]['person_id']) +
+          matches[matchIdx]['name'] +
+        '</div>'
       );
     }
     $(".registration_members_list").html(container);
@@ -140,7 +169,7 @@ $(document).ready(() => {
 
   if (window.location.href.indexOf("visitor") > -1) {
     options = {
-      roomName: "pandemic-parliament",
+      roomName: 'pandemia-parliament',
       width: 1200,
       height: 600,
       parentNode: document.querySelector("#visitorview"),
@@ -160,9 +189,12 @@ $(document).ready(() => {
     const api = new JitsiMeetExternalAPI(domain, options);
   }
 
-  if (window.location.href.indexOf("lobby") > -1) {
-    const socketurl = `${window.location.protocol}//${window.location.host}/lobby`;
-    const socket = io.connect(socketurl);
+
+  if (window.location.href.indexOf("lobby") > -1){
+    squareThis('#meet', 0.67);
+
+    const socketurl = window.location.protocol+'//'+window.location.host+'/lobby'
+    let socket = io.connect(socketurl);
 
     socket.emit("joining", { username });
 
@@ -178,8 +210,9 @@ $(document).ready(() => {
       $(".roster").html(container);
     });
 
-    options.roomName = "pandemic-parliament-lobby";
-    const api = new JitsiMeetExternalAPI(domain, options);
+
+    options.roomName = 'pandemia-parliament-lobby'
+    let api = new JitsiMeetExternalAPI(domain, options);
 
     $(".roster").on("click", ".roster-btn", (event) => {
       socket.emit("redirect", `${event.target.id}`);
@@ -240,6 +273,7 @@ $(document).ready(() => {
       });
       return false;
     });
+    squareThis('#meet', 0.67);
 
     $("#vote-no").click(() => {
       socket.emit("vote", {
@@ -326,27 +360,32 @@ $(document).ready(() => {
       d3.select("svg").datum(d).call(parliament);
     });
 
-    socket.emit("joining", {
-      username,
-    });
-    socket.on("members", (members) => {
-      console.log("members: ", members);
-      const container = $(
-        '<div class="d-flex flex-column bd-highlight mb-3"/>'
-      );
-      for (clientId in members) {
-        if (uid === adminUid) {
-          container.append(
-            `<button type="button" class="btn btn-light btn-sm member-btn m-1" id="${clientId}" name="${members[clientId].username}">${members[clientId].username}</button>`
-          );
-        } else {
-          container.append(
-            `<a href="#" class="btn btn-light btn-sm member-btn m-1 disabled" tabindex="-1" role="button" aria-disabled="true" id="${clientId}">${members[clientId].username}</a>`
-          );
+    // Session socket.io
+    const socketurl = window.location.protocol+'//'+window.location.host+'/session'
+    let socket = io.connect(socketurl, {transports: ['websocket']});
+    socket.emit('joining', {username: username, id: uid});
+    socket.on('members', members_in_session => {
+      // as members may not have been loaded delay rendering... ...
+      setTimeout(() => {
+        console.log('members: ', members_in_session)
+        let container = $('<div class="d-flex flex-column bd-highlight mb-3"/>');
+        for (clientId in members_in_session) {
+          const member = members_in_session[clientId];
+          const memberObj = members.find((m) => m.id == member.id);
+          if (uid === adminUid) {
+            container.append('<button type="button" class="btn btn-light btn-sm member-btn m-1" id="' + clientId + '" name="' + member.username + '">' + member.username + '</button>');
+          } else {
+            container.append(
+              '<a href="#" class="btn btn-light btn-sm member-btn m-1 disabled" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' +
+              memberImage(member.id, memberObj.person_id) +
+              member.username +
+              '</a>');
+          }
         }
-      }
-      $(".membersRoster").html(container);
-    });
+        $('.membersRoster')
+          .html(container);
+      });
+    }, members === undefined ? 1000 : 0);
 
     socket.on("toggleMute", (message) => {
       console.log("message: ", message);

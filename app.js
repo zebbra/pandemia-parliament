@@ -155,6 +155,11 @@ app.post('/account/password', passportConfig.isAuthenticated, userController.pos
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 
+// letsencrypt
+app.get('/.well-known/acme-challenge/:content', (req, res) => {
+  res.send('mVGXITfqgG_oDn5aj3g5w_JuKMiotFJa0i0z9-c0yes.xMyvIUr0UL-PLKNrJWIQGrk0lJKEIf5_VVhRVhkW0Xk')
+})
+
 /**
  * Scoket io
  */

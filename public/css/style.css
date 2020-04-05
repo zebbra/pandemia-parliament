@@ -22,6 +22,10 @@ p, a {
 a:hover {
   color: #033840; }
 
+.lead {
+  padding-top: 30px;
+  padding-bottom: 20px; }
+
 #jitsiConferenceFrame0 {
   border: 20px !important;
   border-color: white !important;

@@ -108,7 +108,10 @@ function _mapUrlParams(queryString) {
     }, {});
 }
 
-
+// move user to https if http is used
+if (location.protocol !== 'https:') {
+  location.replace(`https:${location.href.substring(location.protocol.length)}`);
+}
 
 $(document).ready(function() {
 

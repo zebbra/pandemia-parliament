@@ -212,6 +212,7 @@ $(document).ready(function() {
   }
 
   if (window.location.href.indexOf("lobby") > -1){
+
     squareThis('#meet', 0.67);
 
     const socketurl = window.location.protocol+'//'+window.location.host+'/lobby'
@@ -230,7 +231,6 @@ $(document).ready(function() {
       }
       $(".roster").html(container);
     });
-
 
     options.roomName = 'pandemia-parliament-lobby'
     let api = new JitsiMeetExternalAPI(domain, options);
@@ -278,6 +278,9 @@ $(document).ready(function() {
   });
 
   if (window.location.href.indexOf("session") > -1) {
+
+    let requestToTalkActive = false
+
     // Session socket.io
     const socketurl = `${window.location.protocol}//${window.location.host}/session`;
     const socket = io.connect(socketurl, {
@@ -392,7 +395,12 @@ $(document).ready(function() {
           const member = members_in_session[clientId];
           const memberObj = members.find((m) => m.id == member.id);
           if (uid === adminUid) {
-            container.append('<button type="button" class="btn btn-light btn-sm member-btn m-1" id="' + clientId + '" name="' + member.username + '">' + member.username + '</button>');
+            // container.append('<button type="button" class="btn btn-light btn-sm member-btn m-1" id="' + clientId + '" name="' + member.username + '">' + member.username + '</button>');
+            container.append(
+              '<a href="#" class="btn btn-light btn-sm member-btn m-1" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' +
+              memberImage(member.id, memberObj.person_id) +
+              member.username +
+              '</a>');
           } else {
             container.append(
               '<a href="#" class="btn btn-light btn-sm member-btn m-1 disabled" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' +
@@ -409,11 +417,48 @@ $(document).ready(function() {
     socket.on("toggleMute", (message) => {
       console.log("message: ", message);
       api.executeCommand("toggleAudio");
+      $("#requestToTalk").addClass("text-muted");
+      $("#requestToTalk").removeClass("text-primary");
+      requestToTalkActive = !requestToTalkActive
     });
 
     $(".membersRoster").on("click", ".member-btn", (event) => {
+      $(`#${event.target.id}`).removeClass("btn-primary");
       socket.emit("toggleMute", `${event.target.id}`);
       return false;
     });
+
+    socket.on("toggleRaiseHand", (message) => {
+      console.log(message)
+      if (message.state){
+        $(`#${message.id}`).addClass("btn-primary");
+      } else {
+        $(`#${message.id}`).removeClass("btn-primary");
+      }
+      //$(`#${message.id}`).addClass("border-primary");
+      
+    });
+
+    $("#sessionControl").on("click", "#requestToTalk", (event) => {
+      if (requestToTalkActive) {
+        $("#requestToTalk").addClass("text-muted");
+        $("#requestToTalk").removeClass("text-primary");
+        $("#requestToTalkIcon").addClass( "text-info" )
+        socket.emit("toggleRaiseHand", {state:!requestToTalkActive, id:uid});
+      } else {
+        $("#requestToTalk").removeClass("text-muted");
+        $("#requestToTalk").addClass("text-primary");
+        $("#requestToTalkIcon").removeClass( "text-info" )
+        socket.emit("toggleRaiseHand", {state:!requestToTalkActive, id:uid});
+      } 
+      requestToTalkActive = !requestToTalkActive
+    });
+
+    $("#requestToTalk").hover(() => {
+      if (!requestToTalkActive) {
+        $("#requestToTalkIcon").toggleClass( "text-info" )
+      }
+    });
+
   }
 });

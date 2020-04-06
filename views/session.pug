@@ -22,6 +22,9 @@ block content
             button.btn-sm.list-group-item.list-group-item-action.active Funding of pademia parliament.
         .col-md-8
           div#meet(data-bar="foo")&attributes({'data-foo': 'bar'})
+          .row.mt-2.d-flex.flex-row.justify-content-center#sessionControl
+            .btn.btn-link.text-muted#requestToTalk
+              i#requestToTalkIcon.fas.fa-hand-paper.fa-4x
         .col-md-2
           h4 Members Online
           div.membersRoster
@@ -31,7 +34,6 @@ block content
           svg#d3-parliament-svg
         .col-md-2
           include partials/vote
-
             doctype html
     include partials/footer
 

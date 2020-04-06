@@ -214,9 +214,16 @@ sessnp.on("connection", (socket) => {
     sessnp.emit('members', members);  });
 
   socket.on('toggleMute', msg => {
-    sessnp.to(`${msg}`).emit('toggleMute', 'hey, lets mute you');
+    const socketID = Object.keys(members).find(key => members[key].id === parseInt(msg));
+    console.log('toggleMute on : ', {msg:msg, socketID:socketID})
+    sessnp.to(`${socketID}`).emit('toggleMute', 'hey, lets toggle your audio');
   });
 
+  socket.on('toggleRaiseHand', msg => {
+    const adminId = Object.keys(members).find(key => members[key].id === 1346);
+    console.log('toggleRaiseHand on : ', {msg:msg, adminId:adminId})
+    sessnp.to(adminId).emit('toggleRaiseHand', msg);
+  });
 });
 
 /**

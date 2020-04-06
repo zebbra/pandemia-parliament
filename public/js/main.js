@@ -30,6 +30,7 @@ let options = {
     // }
 };
 const adminUid = 1346
+const lobbyAdminUid = 1346
 /**
  * Make an element's height equal to its width and sets an event handler to keep doing it
  * @param {string} element - Selector of the element to make square
@@ -112,13 +113,13 @@ function _mapUrlParams(queryString) {
 $(document).ready(function() {
 
   const memberImage = (id, person_id) =>
-    `<img id="${id}" src="https://www.parlament.ch/sitecollectionimages/profil/portrait-260/${person_id}.jpg" />`;
+    `<img id="${id}" src="https://www.parlament.ch/sitecollectionimages/profil/portrait-260/${person_id}.jpg" class="img-thumbnail rounded"/>`;
 
   const memberById = (id) =>
     members.find((member) => member['id'] === id);
 
   const searchForMember = (query) => {
-    let matches = members.slice(0, 10);
+    let matches = members.slice(0, 3);
     if (query) {
       const queryLower = query.toLowerCase();
       matches = members
@@ -129,10 +130,10 @@ $(document).ready(function() {
         )
         .slice(0, 10);
     }
-    const container = $("<div />");
+    const container = $('<div class="d-flex flex-row"/>');
     for (matchIdx in matches) {
       container.append(
-        '<div class="btn btn-light btn-sm roster-btn" id="' + matches[matchIdx]['id'] + '">' +
+        '<div class="d-flex flex-column btn btn-light btn-sm roster-btn" id="' + matches[matchIdx]['id'] + '">' +
           memberImage(matches[matchIdx]['id'], matches[matchIdx]['person_id']) +
           matches[matchIdx]['name'] +
         '</div>'
@@ -162,16 +163,18 @@ $(document).ready(function() {
 
   console.log("using uid", uid);
 
-  if (uid === adminUid) {
+  if (uid === lobbyAdminUid) {
     // console.log('you are the admin')
     $(".roster").removeAttr("style");
   }
-
   if (window.location.href.indexOf("visitor") > -1) {
+
+    squareThis('#visitorview', 0.67);
+    $('#visitorview').css('opacity', '0');
+    $('#visitorviewText').text('Currently there is no Live session');
+
     options = {
       roomName: 'pandemia-parliament',
-      width: 1200,
-      height: 600,
       parentNode: document.querySelector("#visitorview"),
       configOverwrite: {
         requireDisplayName: true,
@@ -187,8 +190,26 @@ $(document).ready(function() {
       },
     };
     const api = new JitsiMeetExternalAPI(domain, options);
-  }
+    let numberOfParticipants = api.getNumberOfParticipants();
 
+    function participantJoinedListener(object)
+    {
+      //console.log('incomingMessageListener: ', object)
+      numberOfParticipants = api.getNumberOfParticipants();
+      console.log('numberOfParticipants: ', numberOfParticipants)
+      if (numberOfParticipants >= 1) {
+        $('#visitorviewText').text('Livestream of Swiss Parliament EXTRAORDINARY SESSION');
+        $('#visitorview').css('opacity', '1');
+      }
+
+    }
+
+    api.addEventListeners({
+        participantJoined: participantJoinedListener,
+    });
+    console.log('numberOfParticipants: ', numberOfParticipants)
+    
+  }
 
   if (window.location.href.indexOf("lobby") > -1){
     squareThis('#meet', 0.67);

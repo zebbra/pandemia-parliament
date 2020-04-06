@@ -10,14 +10,13 @@ block content
       h2.subheader-subpage.text-center Please register to access the lobby
   .main
     .container
-
       .row
         .col-md-12.text-center
           p.lead This is a showcase-version of Pandemia Parliament. Select a member of the national council to join the Lobby.
           p Search: 
             input(id='registration_name')
       .row
-        .col-md-12
+        .col-md-12.d-flex.justify-content-center
           div.registration_members_list Loading...
           //a.btn.btn-main.btn-raised(href='#', role='button', id='after_registration') Register
   include partials/footer

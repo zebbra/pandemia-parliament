@@ -33,6 +33,7 @@ For this hackathon we build a simple ShowCase that gives an impression how an on
 
 * https://www.letemps.ch/suisse/democratie-numerique
 * https://www.republik.ch/2020/04/02/kinder-aus-lesbos-die-schweiz-sagt-nein-spitaeler-melden-kurz-arbeit-an-und-was-es-fuer-ein-digitales-parlament-braeuchte
+* https://www.nzz.ch/amp/schweiz/die-halbe-schweiz-arbeitet-von-zuhause-aus-nur-das-parlament-will-sich-weiterhin-physisch-treffen-ld.1549953
 
 ## Collaborators, Hackers, Thinkers
 
@@ -45,7 +46,6 @@ For this hackathon we build a simple ShowCase that gives an impression how an on
 | Marek Paulson | Hacker | |
 | Jean-Henry Morin | Researcher | @jhmorin |
 | Martin Städeli | Advisor / Federal Council | |
-| Martin | | |
 | Claudio Sigenthaler | Hacker | |
 
 ## Supporters - advisors, mentors, coaches

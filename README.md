@@ -25,6 +25,10 @@ For this hackathon we build a simple ShowCase that gives an impression how an on
 
 ![](public/assets/screenshot1.png)
 
+# Contact
+
+* https://twitter.com/PandemiaParl
+* contact@pandemia-parliament.ch
 
 # Acknolegment & Contributions
 
@@ -41,9 +45,10 @@ For this hackathon we build a simple ShowCase that gives an impression how an on
 |---------------------|---------------------------|------------------------------------|
 | Kusi - Markus Roth | Ideator / Hacker | https://zebbra.ch / @MrChusiiii |
 | Felix Hoesch | Political Advisor | http://felix.hoesch.ch / @FelixZRH |
+| Lukas Frei | Hacker / Teacher / Politician | @LukasFreiLuzern |
+| Marek Paulson | Hacker | https://zebbra.ch|
 | Clau Dermont | Political Advisor | http://claudermont.ch @claudermont |
 | Patrick Stählin | Mentor / Hacker | https://patrickstaehlin.ch / @thepacki |
-| Marek Paulson | Hacker | |
 | Jean-Henry Morin | Researcher | @jhmorin |
 | Martin Städeli | Advisor / Federal Council | |
 | Claudio Sigenthaler | Hacker | |

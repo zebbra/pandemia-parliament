@@ -29,6 +29,7 @@ let options = {
     //   email: 'email@jitsiexamplemail.com'
     // }
 };
+
 const adminUid = 1346
 const lobbyAdminUid = 1346
 /**
@@ -109,7 +110,9 @@ function _mapUrlParams(queryString) {
 }
 
 // move user to https if http is used
-if (location.protocol !== 'https:') {
+const dev = false
+
+if (!dev && location.protocol !== 'https:') {
   location.replace(`https:${location.href.substring(location.protocol.length)}`);
 }
 
@@ -290,34 +293,48 @@ $(document).ready(function() {
       transports: ["websocket"],
     });
 
+    socket.emit("voteSession", {
+      session: "session id",
+    });
+    
+    socket.on("voteSession", (msg) => {
+      if (msg.pieData.yes > 0 || msg.pieData > 0 || msg.pieData.skip > 0) { setVoteData(msg.pieData) }
+    });
+
+    socket.on("vote", (msg) => {
+      setVoteData(msg.pieData)
+    });
+
     $("#vote-yes").click(() => {
-      console.log("lol");
+      console.log("vote-yes");
       socket.emit("vote", {
         session: "session id",
         topic: "the current topic in the agenda",
         voting: "yes",
-        member: "the member who voted",
+        member: uid,
       });
       return false;
     });
     squareThis('#meet', 0.67);
 
     $("#vote-no").click(() => {
+      console.log("vote-no");
       socket.emit("vote", {
         session: "session id",
         topic: "the current topic in the agenda",
         voting: "no",
-        member: "the member who voted",
+        member: uid,
       });
       return false;
     });
 
     $("#vote-skip").click(() => {
+      console.log("vote-skip");
       socket.emit("vote", {
         session: "session id",
         topic: "the current topic in the agenda",
         voting: "skip",
-        member: "the member who voted",
+        member: uid,
       });
       return false;
     });
@@ -437,9 +454,7 @@ $(document).ready(function() {
         $(`#${message.id}`).addClass("btn-primary");
       } else {
         $(`#${message.id}`).removeClass("btn-primary");
-      }
-      //$(`#${message.id}`).addClass("border-primary");
-      
+      }      
     });
 
     $("#sessionControl").on("click", "#requestToTalk", (event) => {

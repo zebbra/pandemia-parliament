@@ -198,6 +198,13 @@ lobbynsp.on("connection", (socket) => {
 });
 
 let members = {};
+let votesession = {
+  pieData: {
+    yes: 0,
+    no: 0,
+    skip: 0,
+  },
+};
 
 sessnp.on("connection", (socket) => {
   console.log(`Client connected to session namespace [id=${socket.id}]`);
@@ -224,6 +231,25 @@ sessnp.on("connection", (socket) => {
     console.log('toggleRaiseHand on : ', {msg:msg, adminId:adminId})
     sessnp.to(adminId).emit('toggleRaiseHand', msg);
   });
+
+  socket.on('vote', msg => {
+    console.log('vote: ', {msg:msg})
+    if (msg.voting === 'skip'){
+      votesession.pieData.skip ++
+    }
+    if (msg.voting === 'yes'){
+      votesession.pieData.yes ++
+    }
+    if (msg.voting === 'no'){
+      votesession.pieData.no ++
+    }
+    io.of('/session').emit('vote', votesession);
+  });
+
+  socket.on('voteSession', () => {
+    socket.emit('voteSession', votesession);
+  });
+  
 });
 
 /**

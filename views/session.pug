@@ -23,8 +23,10 @@ block content
         .col-md-8
           div#meet(data-bar="foo")&attributes({'data-foo': 'bar'})
           .row.mt-2.d-flex.flex-row.justify-content-center#sessionControl
-            .btn.btn-link.text-muted#requestToTalk
+            button.btn.btn-link.text-muted#requestToTalk(type="button" data-toggle="tooltip" data-placement="left" title="Request To Talk")
               i#requestToTalkIcon.fas.fa-hand-paper.fa-4x
+            button.btn.btn-link.text-muted#startVote(type="button" data-toggle="tooltip" data-placement="right" title="Start or Reset Vote")
+              i#startVoteIcon.fas.fa-inbox.fa-4x
         .col-md-2
           h4 Members Online
           div.membersRoster
@@ -32,7 +34,7 @@ block content
       .row.mt-3
         .col-md-8.text-center
           svg#d3-parliament-svg
-        .col-md-2
+        .col-md-2.votingElement
           include partials/vote
             doctype html
     include partials/footer

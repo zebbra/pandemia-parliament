@@ -118,6 +118,10 @@ if (!dev && location.protocol !== 'https:') {
 
 $(document).ready(function() {
 
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+
   const memberImage = (id, person_id) =>
     `<img id="${id}" src="https://www.parlament.ch/sitecollectionimages/profil/portrait-260/${person_id}.jpg" class="img-thumbnail rounded"/>`;
 
@@ -283,9 +287,15 @@ $(document).ready(function() {
     searchForMember(value);
   });
 
+
+  /////// SESSION
+
   if (window.location.href.indexOf("session") > -1) {
 
     let requestToTalkActive = false
+    let voteStarted = false
+
+    $(".votingElement").hide()
 
     // Session socket.io
     const socketurl = `${window.location.protocol}//${window.location.host}/session`;
@@ -302,7 +312,19 @@ $(document).ready(function() {
     });
 
     socket.on("vote", (msg) => {
-      setVoteData(msg.pieData)
+      if (msg === 'reset'){
+        console.log('vote reset')
+        $(".votingElement").hide()
+      } 
+
+      if (msg === 'start') {
+        console.log('vote start')
+
+        $(".votingElement").show()
+      }
+      if (msg.pieData) {
+        setVoteData(msg.pieData)
+      }
     });
 
     $("#vote-yes").click(() => {
@@ -313,6 +335,9 @@ $(document).ready(function() {
         voting: "yes",
         member: uid,
       });
+      $("#vote-no").hide()
+      $("#vote-yes").hide()
+      $("#vote-skip").hide()
       return false;
     });
     squareThis('#meet', 0.67);
@@ -325,6 +350,9 @@ $(document).ready(function() {
         voting: "no",
         member: uid,
       });
+      $("#vote-no").hide()
+      $("#vote-yes").hide()
+      $("#vote-skip").hide()
       return false;
     });
 
@@ -336,52 +364,27 @@ $(document).ready(function() {
         voting: "skip",
         member: uid,
       });
+      $("#vote-no").hide()
+      $("#vote-yes").hide()
+      $("#vote-skip").hide()
       return false;
     });
 
     if (uid != adminUid) {
       options.interfaceConfigOverwrite = {
         filmStripOnly: false,
-        TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'raisehand'],
+        // TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'raisehand'],
+        TOOLBAR_BUTTONS: ['camera', 'desktop', 'raisehand'],
 
         SETTINGS_SECTIONS: [],
       };
+      $("#startVote").hide()
     }
 
     let api = new JitsiMeetExternalAPI(domain, options);
     api.executeCommand("displayName", username);
 
-    $(".nav-link").click((e) => {
-      const action = $(event.target).text();
-      console.log("action", action);
-      if (action === "Hangup") {
-        api.executeCommand("hangup");
-      } else if (action === "Request to Talk") {
-        api.executeCommand(
-          "avatarUrl",
-          "https://avatars0.githubusercontent.com/u/3671647"
-        );
-        alert("duly noted");
-      } else if (action === "Count") {
-        alert(`we have ${api.getNumberOfParticipants()} members online`);
-      } else if (action === "Home") {
-        api.executeCommand("toggleFilmStrip");
-        api.executeCommand("toggleChat");
-        api.executeCommand(
-          "subject",
-          `Lets talk about ${(Math.random() * 1000).toFixed(0)}`
-        );
-      } else if (action === "Change Room") {
-        api.executeCommand("hangup");
-        alert("you are being moved....");
-        $("#meet").empty();
-        setTimeout(() => {
-          options.roomName += "2";
-          api = new JitsiMeetExternalAPI(domain, options);
-        }, 1000);
-      }
-    });
-
+    
     const parliament = d3.parliament();
     console.log("parliament d3", parliament);
     parliament.width(600).height(400).innerRadiusCoef(0.4);
@@ -470,12 +473,24 @@ $(document).ready(function() {
         socket.emit("toggleRaiseHand", {state:!requestToTalkActive, id:uid});
       } 
       requestToTalkActive = !requestToTalkActive
-    });
+    }); 
 
     $("#requestToTalk").hover(() => {
       if (!requestToTalkActive) {
         $("#requestToTalkIcon").toggleClass( "text-info" )
       }
+    });
+
+    $("#sessionControl").on("click", "#startVote", (event) => {
+      if (voteStarted) {
+        socket.emit("vote", "reset");
+      } else {
+        socket.emit("vote", "start");
+        socket.emit("voteSession", {
+          session: "session id",
+        });
+      } 
+      voteStarted = !voteStarted
     });
 
   }

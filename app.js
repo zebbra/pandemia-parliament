@@ -204,7 +204,8 @@ let agenda = [
   },
   {
     name: 'Council President election',
-    status: 'active'
+    status: 'active',
+    candidate: ''
   },
   {
     name: 'Funding of pademia parliament',
@@ -295,10 +296,17 @@ sessnp.on("connection", (socket) => {
   socket.on('startDemo', () => {
     sessionState.started = true
     sessionState.voteStarted = true
+    sessionState.agenda[1].candidate = randomProperty(members)
     socket.emit('getStateOfSession', sessionState);
   })
 
 });
+
+//to get random value from object
+var randomProperty = function (obj) {
+  var keys = Object.keys(obj);
+  return obj[keys[ keys.length * Math.random() << 0]];
+};
 
 /**
  * Error Handler.

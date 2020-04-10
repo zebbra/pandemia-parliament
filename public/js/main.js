@@ -384,7 +384,7 @@ $(document).ready(function() {
       options.interfaceConfigOverwrite = {
         filmStripOnly: false,
         // TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'raisehand'],
-        TOOLBAR_BUTTONS: ['camera', 'desktop', 'raisehand'],
+        TOOLBAR_BUTTONS: ['camera', 'desktop'],
 
         SETTINGS_SECTIONS: [],
       };
@@ -508,6 +508,9 @@ $(document).ready(function() {
     ///// SELF-Service Demo
     socket.emit("getStateOfSession")
     socket.on("getStateOfSession" , (msg) => {
+      if (!msg.started){
+        socket.emit("startDemo")
+      }
       //console.log(msg)
       let container = $('<div class="list-group"/>');
       for (item in msg.agenda) {
@@ -520,13 +523,25 @@ $(document).ready(function() {
         if (msg.agenda[item].status === 'up') {
           container.append('<button class="btn-sm list-group-item list-group-item-action disabled">' + msg.agenda[item].name + '</button>');
         }
-        // console.log(msg.agenda[item].name)
-        // console.log(msg.agenda[item].status)
       }
       $('#agenda').html(container);
 
+      if(msg.voteStarted){
+        $("#startVote").click();
+        const topic = msg.agenda.filter(item => {
+          console.log(item.status)
+          return item.status === 'active'
+        })
+        console.log('topic[0].candidate.length', topic[0].candidate)
+        if (topic[0].candidate){
+          $("#votingMessage").text(`Vote ${topic[0].candidate.username} for Council President`);
+        } else {
+          $("#votingMessage").text(`Vote active for topic: ${topic[0].name}`);
+        }
+        
+      }
+
     })
-    socket.emit("startDemo")
 
     //$("#startVote").click();
     //$("#votingMessage").text('');

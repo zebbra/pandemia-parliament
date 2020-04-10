@@ -229,6 +229,15 @@ let votesession = {
   },
 };
 
+
+
+const checkVotes = () => {
+  const numberOfVotes = votesession.pieData.yes + votesession.pieData.skip + votesession.pieData.no
+  if (numberOfVotes === Object.keys(members).length) {
+    console.log('all have voted')
+  }
+};
+
 sessnp.on("connection", (socket) => {
   console.log(`Client connected to session namespace [id=${socket.id}]`);
   // initialize this client's sequence number
@@ -262,18 +271,26 @@ sessnp.on("connection", (socket) => {
       votesession.pieData = {yes: 0, no: 0, skip: 0}; 
     }
     if (msg === 'start'){
+      const currentTopic = agenda.filter(item => {
+        return item.status === 'active'
+      })
+      votesession.topic = currentTopic
       io.of('/session').emit('vote', 'start');
     }
 
     if (msg.voting === 'skip'){
       votesession.pieData.skip ++
+      checkVotes()
     }
     if (msg.voting === 'yes'){
       votesession.pieData.yes ++
+      checkVotes()
     }
     if (msg.voting === 'no'){
       votesession.pieData.no ++
+      checkVotes()
     }
+    
     io.of('/session').emit('vote', votesession);
   });
 

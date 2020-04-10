@@ -525,7 +525,6 @@ $(document).ready(function() {
         }
       }
       $('#agenda').html(container);
-
       if(msg.voteStarted){
         $("#startVote").click();
         const topic = msg.agenda.filter(item => {
@@ -537,10 +536,8 @@ $(document).ready(function() {
           $("#votingMessage").text(`Vote ${topic[0].candidate.username} for Council President`);
         } else {
           $("#votingMessage").text(`Vote active for topic: ${topic[0].name}`);
-        }
-        
+        } 
       }
-
     })
 
     //$("#startVote").click();

@@ -559,8 +559,8 @@ $(document).ready(function() {
     });
 
     ///// SELF-Service Demo
-    socket.emit("getStateOfSession")
-    socket.on("getStateOfSession" , (msg) => {
+    socket.emit("stateOfSession")
+    socket.on("stateOfSession" , (msg) => {
       if (!msg.started){
         socket.emit("startDemo")
       }
@@ -578,7 +578,8 @@ $(document).ready(function() {
         }
       }
       $('#agenda').html(container);
-      if(msg.voteStarted){
+
+      if(msg.voteActive){
         $("#startVote").click();
         const topic = msg.agenda.filter(item => {
           console.log(item.status)
@@ -591,6 +592,10 @@ $(document).ready(function() {
           $("#votingMessage").text(`Vote active for topic: ${topic[0].name}`);
         } 
       }
+      if (!msg.voteActive) {
+        $("#votingMessage").text('')
+      }
+
     })
 
     //$("#startVote").click();

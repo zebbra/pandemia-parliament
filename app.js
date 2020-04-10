@@ -218,7 +218,7 @@ let agenda = [
 ]
 
 let members = {};
-let sessionState = {started:false, voteStarted:false, agenda:agenda}
+let sessionState = {started:false, voteActive:false, agenda:agenda}
 let adminUid = 1346
 
 let votesession = {
@@ -229,6 +229,12 @@ let votesession = {
     skip: 0,
   },
 };
+
+const _moveToNextTopic = () => {
+  const currentActieIndex = agenda.findIndex(item => item.status === 'active')
+  agenda[currentActieIndex].status = 'done'
+  agenda[currentActieIndex + 1].status = 'active'
+}
 
 function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
@@ -297,12 +303,15 @@ sessnp.on("connection", (socket) => {
 
     if (checkVotes() === 'yes'){
       if (agenda[1].status === 'active'){
-        console.log(votesession.topic[0].candidate.id)
         const msg = votesession.topic[0].candidate.id
         adminUid = msg
-        console.log(members)
         const socketID = Object.keys(members).find(key => members[key].id === parseInt(msg));
         sessnp.to(`${socketID}`).emit('private', 'youwon');
+        io.of('/session').emit('vote', 'reset');
+        votesession.pieData = {yes: 0, no: 0, skip: 0};
+        sessionState.voteActive = false
+        _moveToNextTopic()
+        socket.emit('stateOfSession', sessionState);
       }
     }
 
@@ -321,15 +330,15 @@ sessnp.on("connection", (socket) => {
     }
   });
 
-  socket.on('getStateOfSession', () => {
-    socket.emit('getStateOfSession', sessionState);
+  socket.on('stateOfSession', () => {
+    socket.emit('stateOfSession', sessionState);
   })
 
   socket.on('startDemo', () => {
     sessionState.started = true
-    sessionState.voteStarted = true
+    sessionState.voteActive = true
     sessionState.agenda[1].candidate = randomProperty(members)
-    socket.emit('getStateOfSession', sessionState);
+    socket.emit('stateOfSession', sessionState);
   })
 
   socket.on('adminUid', () => {

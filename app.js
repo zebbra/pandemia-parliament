@@ -268,7 +268,6 @@ sessnp.on("connection", (socket) => {
         socket.emit('stateOfSession', sessionState);
       }
     }
-
     io.of('/session').emit('vote', votesession);
   });
   
@@ -298,6 +297,42 @@ sessnp.on("connection", (socket) => {
   socket.on('adminUid', () => {
     socket.emit('adminUid', adminUid);
   })
+
+  socket.on('resetSession', () => {
+    agenda = [
+      {
+        name: 'Welcome',
+        status: 'done'
+      },
+      {
+        name: 'Council President election',
+        status: 'active',
+        candidate: ''
+      },
+      {
+        name: 'Funding of pademia parliament',
+        status: 'up'
+      },
+      {
+        name: 'Funding of pademia parliament ballot',
+        status: 'up'
+      },
+    ]
+    
+    sessionState = {started:false, voteActive:false, agenda:agenda}
+    adminUid = 1346
+    
+    votesession = {
+      topic:'',
+      pieData: {
+        yes: 0,
+        no: 0,
+        skip: 0,
+      },
+    };
+    socket.emit('resetSession');
+  })
+
 });
 
 //to get random value from object

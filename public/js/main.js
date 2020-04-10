@@ -123,6 +123,7 @@ $.fn.redraw = function(){
 
 $(document).ready(function() {
 
+  $('#resetSession').hide()
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
@@ -338,6 +339,7 @@ $(document).ready(function() {
   } */
 
   if (window.location.href.indexOf("session") > -1) {
+    $('#resetSession').show()
 
     $.confirm({
         title: 'You are now in session',
@@ -622,6 +624,11 @@ $(document).ready(function() {
 
     //$("#startVote").click();
     //$("#votingMessage").text('');
-
+    $('#resetSession').click(() => {
+      socket.emit('resetSession')
+    })
+    socket.on('resetSession', () => {
+      window.location.href = `/lobby?u=${username}&uid=${uid}`
+    })
   }
 });

@@ -110,7 +110,7 @@ function _mapUrlParams(queryString) {
 }
 
 // move user to https if http is used
-const dev = false
+const dev = true
 
 if (!dev && location.protocol !== 'https:') {
   location.replace(`https:${location.href.substring(location.protocol.length)}`);
@@ -319,8 +319,10 @@ $(document).ready(function() {
 
       if (msg === 'start') {
         console.log('vote start')
-
         $(".votingElement").show()
+        $("#vote-no").show()
+        $("#vote-yes").show()
+        $("#vote-skip").show()
       }
       if (msg.pieData) {
         setVoteData(msg.pieData)

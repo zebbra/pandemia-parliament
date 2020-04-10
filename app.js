@@ -197,8 +197,30 @@ lobbynsp.on("connection", (socket) => {
   });
 });
 
+let agenda = [
+  {
+    name: 'Welcome',
+    status: 'done'
+  },
+  {
+    name: 'Council President election',
+    status: 'active'
+  },
+  {
+    name: 'Funding of pademia parliament',
+    status: 'up'
+  },
+  {
+    name: 'Funding of pademia parliament ballot',
+    status: 'up'
+  },
+]
+
 let members = {};
+let sessionState = {started:false, voteStarted:false, agenda:agenda}
+
 let votesession = {
+  topic:'',
   pieData: {
     yes: 0,
     no: 0,
@@ -266,7 +288,16 @@ sessnp.on("connection", (socket) => {
     }
   });
 
-  
+  socket.on('getStateOfSession', () => {
+    socket.emit('getStateOfSession', sessionState);
+  })
+
+  socket.on('startDemo', () => {
+    sessionState.started = true
+    sessionState.voteStarted = true
+    socket.emit('getStateOfSession', sessionState);
+  })
+
 });
 
 /**

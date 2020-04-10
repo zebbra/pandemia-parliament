@@ -30,7 +30,7 @@ let options = {
     // }
 };
 
-const adminUid = 1346
+let adminUid = 1346
 const lobbyAdminUid = 1346
 /**
  * Make an element's height equal to its width and sets an event handler to keep doing it
@@ -493,8 +493,10 @@ $(document).ready(function() {
 
     $("#sessionControl").on("click", "#startVote", (event) => {
       if (voteStarted) {
+        //End vote
         socket.emit("vote", "reset");
       } else {
+        //Start vote
         socket.emit("vote", "start");
         socket.emit("voteSession", {
           session: "session id",
@@ -504,7 +506,30 @@ $(document).ready(function() {
     });
 
     ///// SELF-Service Demo
-    
+    socket.emit("getStateOfSession")
+    socket.on("getStateOfSession" , (msg) => {
+      //console.log(msg)
+      let container = $('<div class="list-group"/>');
+      for (item in msg.agenda) {
+        if (msg.agenda[item].status === 'done') {
+          container.append('<button class="btn-sm list-group-item list-group-item-action disabled">' + msg.agenda[item].name + '</button>');
+        }
+        if (msg.agenda[item].status === 'active') {
+          container.append('<button class="btn-sm list-group-item list-group-item-action active">' + msg.agenda[item].name + '</button>');
+        }
+        if (msg.agenda[item].status === 'up') {
+          container.append('<button class="btn-sm list-group-item list-group-item-action disabled">' + msg.agenda[item].name + '</button>');
+        }
+        // console.log(msg.agenda[item].name)
+        // console.log(msg.agenda[item].status)
+      }
+      $('#agenda').html(container);
+
+    })
+    socket.emit("startDemo")
+
+    //$("#startVote").click();
+    //$("#votingMessage").text('');
 
   }
 });

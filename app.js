@@ -258,6 +258,13 @@ sessnp.on("connection", (socket) => {
     socket.emit('voteSession', votesession);
   });
 
+  socket.on('getSession', () => {
+    if (Object.keys(members).length === 0 && members.constructor === Object) {
+      socket.emit('getSession', false);
+    } else {
+      socket.emit('getSession', true);
+    }
+  });
 
   
 });

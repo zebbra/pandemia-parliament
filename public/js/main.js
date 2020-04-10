@@ -1,6 +1,6 @@
 const domain = [
   "open.meet.switch.ch",
-  "pp.paulson.ee",
+  "meet.jit.si",
   "www.kuketz-meet.de",
   "together.lambda-it.ch",
 ][0];
@@ -180,7 +180,9 @@ $(document).ready(function() {
   if (window.location.href.indexOf("visitor") > -1) {
 
     squareThis('#visitorview', 0.67);
-    $('#visitorview').css('opacity', '0');
+
+    // $('#visitorview').css('opacity', '0');
+    $('#visitorview').hide();
     $('#visitorviewText').text('Currently there is no Live session');
 
     options = {
@@ -190,35 +192,25 @@ $(document).ready(function() {
         requireDisplayName: true,
         startWithAudioMuted: true,
         startWithVideoMuted: true,
-        // startVideoMuted: 0,
-        // filmStripOnly: true
       },
       interfaceConfigOverwrite: {
-        TOOLBAR_BUTTONS: ["chat", "raisehand", "tileview"], // 'hangup'
+        TOOLBAR_BUTTONS: ["chat", "tileview"], // 'hangup'
         SETTINGS_SECTIONS: [], // 'devices'
-        // filmStripOnly: true
       },
     };
-    const api = new JitsiMeetExternalAPI(domain, options);
-    let numberOfParticipants = api.getNumberOfParticipants();
 
-    function participantJoinedListener(object)
-    {
-      //console.log('incomingMessageListener: ', object)
-      numberOfParticipants = api.getNumberOfParticipants();
-      console.log('numberOfParticipants: ', numberOfParticipants)
-      if (numberOfParticipants >= 1) {
+    const socketurl = window.location.protocol+'//'+window.location.host+'/session'
+    let socket = io.connect(socketurl);
+    socket.emit('getSession');
+    socket.on('getSession', (msg) => {
+      if (msg) {
+        const api = new JitsiMeetExternalAPI(domain, options);
+        api.executeCommand("displayName", 'Visitor');
         $('#visitorviewText').text('Livestream of Swiss Parliament EXTRAORDINARY SESSION');
-        $('#visitorview').css('opacity', '1');
+        $('#visitorview').show();
+        $('#noVideoIcon').hide();
       }
-
-    }
-
-    api.addEventListeners({
-        participantJoined: participantJoinedListener,
     });
-    console.log('numberOfParticipants: ', numberOfParticipants)
-    
   }
 
   if (window.location.href.indexOf("lobby") > -1){
@@ -306,11 +298,9 @@ $(document).ready(function() {
     socket.emit("voteSession", {
       session: "session id",
     });
-    
     socket.on("voteSession", (msg) => {
       if (msg.pieData.yes > 0 || msg.pieData > 0 || msg.pieData.skip > 0) { setVoteData(msg.pieData) }
     });
-
     socket.on("vote", (msg) => {
       if (msg === 'reset'){
         console.log('vote reset')

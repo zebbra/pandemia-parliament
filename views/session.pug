@@ -15,11 +15,7 @@ block content
       //include partials/controls
       .row
         .col-md-2
-          h4 Agenda
-          .list-group
-            button.btn-sm.list-group-item.list-group-item-action.disabled Welcome
-            button.btn-sm.list-group-item.list-group-item-action.disabled Livestock summer grazing.
-            button.btn-sm.list-group-item.list-group-item-action.active Funding of pademia parliament.
+          include partials/agenda
         .col-md-8
           div#meet(data-bar="foo")&attributes({'data-foo': 'bar'})
           .row.mt-2.d-flex.flex-row.justify-content-center#sessionControl
@@ -32,19 +28,11 @@ block content
           div.membersRoster
             //a.btn.btn-raised(href='#', role='button') View details »
       .row.mt-3
+        .col-md-12.text-center#votingMessage 
+      .row.mt-3.votingElement
         .col-md-8.text-center
           svg#d3-parliament-svg
-        .col-md-2.votingElement
+        .col-md-2
           include partials/vote
             doctype html
     include partials/footer
-
-
-      //- // Google Analytics: change UA-XXXXX-X to be your site's ID
-      //- script.
-      //-   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      //-   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      //-   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      //-   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-      //-   ga('create', 'UA-XXXXX-X', 'auto');
-      //-   ga('send', 'pageview');

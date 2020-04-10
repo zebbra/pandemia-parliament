@@ -151,13 +151,58 @@ lobbynsp.on("connection", (socket) => {
   });
 });
 
+let agenda = [
+  {
+    name: 'Welcome',
+    status: 'done'
+  },
+  {
+    name: 'Council President election',
+    status: 'active',
+    candidate: ''
+  },
+  {
+    name: 'Funding of pademia parliament',
+    status: 'up'
+  },
+  {
+    name: 'Funding of pademia parliament ballot',
+    status: 'up'
+  },
+]
+
 let members = {};
+let sessionState = {started:false, voteActive:false, agenda:agenda}
+let adminUid = 1346
+
 let votesession = {
+  topic:'',
   pieData: {
     yes: 0,
     no: 0,
     skip: 0,
   },
+};
+
+const _moveToNextTopic = () => {
+  const currentActieIndex = agenda.findIndex(item => item.status === 'active')
+  agenda[currentActieIndex].status = 'done'
+  agenda[currentActieIndex + 1].status = 'active'
+}
+
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
+
+const checkVotes = () => {
+  const numberOfVotes = votesession.pieData.yes + votesession.pieData.skip + votesession.pieData.no
+  if (numberOfVotes === Object.keys(members).length) {
+    console.log('all have voted')
+    const highest = Math.max(votesession.pieData.yes,  votesession.pieData.skip, votesession.pieData.no);
+    const result = getKeyByValue(votesession.pieData, highest)
+    console.log('result: ', result)
+    return result
+  }
 };
 
 sessnp.on("connection", (socket) => {
@@ -181,9 +226,9 @@ sessnp.on("connection", (socket) => {
   });
 
   socket.on('toggleRaiseHand', msg => {
-    const adminId = Object.keys(members).find(key => members[key].id === 1346);
-    console.log('toggleRaiseHand on : ', {msg:msg, adminId:adminId})
-    sessnp.to(adminId).emit('toggleRaiseHand', msg);
+    const adminSocketId = Object.keys(members).find(key => members[key].id === adminUid);
+    console.log('toggleRaiseHand on : ', {msg:msg, adminSocketId:adminSocketId})
+    sessnp.to(adminSocketId).emit('toggleRaiseHand', msg);
   });
 
   socket.on('vote', msg => {
@@ -193,6 +238,10 @@ sessnp.on("connection", (socket) => {
       votesession.pieData = {yes: 0, no: 0, skip: 0}; 
     }
     if (msg === 'start'){
+      const currentTopic = agenda.filter(item => {
+        return item.status === 'active'
+      })
+      votesession.topic = currentTopic
       io.of('/session').emit('vote', 'start');
     }
 
@@ -205,9 +254,24 @@ sessnp.on("connection", (socket) => {
     if (msg.voting === 'no'){
       votesession.pieData.no ++
     }
+
+    if (checkVotes() === 'yes'){
+      if (agenda[1].status === 'active'){
+        const msg = votesession.topic[0].candidate.id
+        adminUid = msg
+        const socketID = Object.keys(members).find(key => members[key].id === parseInt(msg));
+        sessnp.to(`${socketID}`).emit('private', 'youwon');
+        io.of('/session').emit('vote', 'reset');
+        votesession.pieData = {yes: 0, no: 0, skip: 0};
+        sessionState.voteActive = false
+        _moveToNextTopic()
+        socket.emit('stateOfSession', sessionState);
+      }
+    }
+
     io.of('/session').emit('vote', votesession);
   });
-
+  
   socket.on('voteSession', () => {
     socket.emit('voteSession', votesession);
   });
@@ -220,8 +284,27 @@ sessnp.on("connection", (socket) => {
     }
   });
 
-  
+  socket.on('stateOfSession', () => {
+    socket.emit('stateOfSession', sessionState);
+  })
+
+  socket.on('startDemo', () => {
+    sessionState.started = true
+    sessionState.voteActive = true
+    sessionState.agenda[1].candidate = randomProperty(members)
+    socket.emit('stateOfSession', sessionState);
+  })
+
+  socket.on('adminUid', () => {
+    socket.emit('adminUid', adminUid);
+  })
 });
+
+//to get random value from object
+var randomProperty = function (obj) {
+  var keys = Object.keys(obj);
+  return obj[keys[ keys.length * Math.random() << 0]];
+};
 
 /**
  * Error Handler.

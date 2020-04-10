@@ -5,7 +5,6 @@ block content
     .container
       a(href="/").menu
         .logo
-
       h1.text-center Lobby
       h2.subheader-subpage.text-center Please wait for your room to be available
 
@@ -13,12 +12,18 @@ block content
     .container-fluid.pl-4.pr-4
       .row
         .col-md-12.text-center
-          p.lead This is a showcase-version of Pandemia Parliament. <br>You don't have access to the Session but you can talk with other politicians here in the lobby. <br>For a guided tour or more information please <a href="contact">contact us</a>.
+          p.lead This is a showcase-version of Pandemia Government. <br>For demo purposes you will be validated automatically, sit tight.
+      .row
+        .col-md-12.text-center
+          p#countdown
       .row
         .col-md-2
             div.roster(style="display: none;")
         .col-md-8.text-center
             div#meet(data-bar="foo")&attributes({'data-foo': 'bar'})
+      .row
+        .col-md-12.text-center
+          p.lead For a guided tour or more information please <a href="contact">contact us</a>.
       .row
         .col-md-1.roster2
   include partials/footer

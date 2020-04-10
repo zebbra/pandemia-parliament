@@ -213,6 +213,8 @@ $(document).ready(function() {
     });
   }
 
+  /////// Lobbbyy
+
   if (window.location.href.indexOf("lobby") > -1){
 
     squareThis('#meet', 0.67);
@@ -236,6 +238,7 @@ $(document).ready(function() {
 
     options.roomName = 'pandemia-parliament-lobby'
     let api = new JitsiMeetExternalAPI(domain, options);
+    api.executeCommand("displayName", username);
 
     $(".roster").on("click", ".roster-btn", (event) => {
       socket.emit("redirect", `${event.target.id}`);
@@ -247,7 +250,22 @@ $(document).ready(function() {
       getUrlParams(window.location.search);
       window.location.href = `/session?u=${username}&uid=${uid}`;
     });
+    
+    let count = 10
+    $('#countdown').text(count);
+
+    var x = setInterval(function() {
+      if (count > 0) {
+        count --
+        $('#countdown').text(count);
+      } else {
+        window.location.href = `/session?u=${username}&uid=${uid}`;
+      }
+    }, 1000);
+  
   }
+
+  /////// Overall
 
   $("#gotosession").click(() => {
     console.log("gotosession");
@@ -484,6 +502,9 @@ $(document).ready(function() {
       } 
       voteStarted = !voteStarted
     });
+
+    ///// SELF-Service Demo
+    
 
   }
 });

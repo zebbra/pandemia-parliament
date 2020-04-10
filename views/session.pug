@@ -15,11 +15,7 @@ block content
       //include partials/controls
       .row
         .col-md-2
-          h4 Agenda
-          .list-group
-            button.btn-sm.list-group-item.list-group-item-action.disabled Welcome
-            button.btn-sm.list-group-item.list-group-item-action.disabled Livestock summer grazing.
-            button.btn-sm.list-group-item.list-group-item-action.active Funding of pademia parliament.
+          include partials/agenda
         .col-md-8
           div#meet(data-bar="foo")&attributes({'data-foo': 'bar'})
           .row.mt-2.d-flex.flex-row.justify-content-center#sessionControl

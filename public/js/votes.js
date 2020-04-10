@@ -36,28 +36,28 @@ const height = 150;
 // The radius of the pieplot is half the width or half the height (smallest one).
 const radius = Math.min(width, height) / 2;
 
-const svg = d3
-.select("#votes-pie")
-.append("svg")
-.attr("width", width)
-.attr("height", height)
-.append("g")
-.attr("transform", `translate(${width / 2},${height / 2})`);
-
 // Compute the position of each group on the pie:
 const pie = d3.pie().value((d) => d.value);
 // shape helper to build arcs:
 const arcGenerator = d3.arc().innerRadius(0).outerRadius(radius);
 
-setVoteData = (data) => {
+const svg = d3
+  .select("#votes-pie")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height)
+  .append("g")
+  .attr("transform", `translate(${width / 2},${height / 2})`);
 
+setVoteData = (data) => {
   console.log('state.pieData', state.pieData)
   console.log('setVoteData: ', data)
   state.pieData = data;
+  
+  svg.selectAll("*").remove()
 
   const data_ready = pie(d3.entries(state.pieData));
   // Now I know that group A goes from 0 degrees to x degrees and so on.
-
 
   svg
   .selectAll("mySlices")
@@ -76,7 +76,7 @@ setVoteData = (data) => {
   .data(data_ready)
   .enter()
   .append("text")
-  .text((d) => `${d.data.value}%`)
+  .text((d) => `${d.data.value}`)
   .attr("transform", (d) => `translate(${arcGenerator.centroid(d)})`)
   .style("text-anchor", "middle")
   .style("font-size", 12);

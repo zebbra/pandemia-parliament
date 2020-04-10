@@ -188,6 +188,14 @@ sessnp.on("connection", (socket) => {
 
   socket.on('vote', msg => {
     console.log('vote: ', {msg:msg})
+    if (msg === 'reset'){
+      io.of('/session').emit('vote', 'reset');
+      votesession.pieData = {yes: 0, no: 0, skip: 0}; 
+    }
+    if (msg === 'start'){
+      io.of('/session').emit('vote', 'start');
+    }
+
     if (msg.voting === 'skip'){
       votesession.pieData.skip ++
     }
@@ -203,6 +211,15 @@ sessnp.on("connection", (socket) => {
   socket.on('voteSession', () => {
     socket.emit('voteSession', votesession);
   });
+
+  socket.on('getSession', () => {
+    if (Object.keys(members).length === 0 && members.constructor === Object) {
+      socket.emit('getSession', false);
+    } else {
+      socket.emit('getSession', true);
+    }
+  });
+
   
 });
 

@@ -17,7 +17,7 @@ h2 {
 p, a {
   font-size: 1.2rem;
   font-family: 'Work Sans', sans-serif;
-  color: #356066; }
+  color: #124585; }
 
 a {
   text-decoration: underline; }
@@ -62,10 +62,10 @@ img {
   background-repeat: no-repeat; }
 
 .subpage {
-  background: #356066; }
+  background: #124585; }
 
 .btn-main {
-  background: #356066 !important;
+  background: #124585 !important;
   font-size: 2rem;
   font-family: 'Work Sans', sans-serif;
   padding: 1rem;
@@ -75,6 +75,7 @@ img {
   text-decoration: none; }
 
 .fullscreen-bg {
+  background-color: #124585;
   position: fixed;
   top: 0;
   right: 0;

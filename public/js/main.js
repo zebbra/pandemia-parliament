@@ -5,8 +5,7 @@ const domain = [
   "together.lambda-it.ch",
 ][0];
 let options = {
-
-    roomName: 'pandemia-parliament',
+    roomName: 'pandemia-covernment',
     // width: 700,
     // height: 500,
     parentNode: document.querySelector('#meet'),
@@ -116,6 +115,12 @@ if (!dev && location.protocol !== 'https:') {
   location.replace(`https:${location.href.substring(location.protocol.length)}`);
 }
 
+$.fn.redraw = function(){
+  $(this).each(function(){
+    var redraw = this.offsetHeight;
+  });
+};
+
 $(document).ready(function() {
 
   $(function () {
@@ -186,7 +191,7 @@ $(document).ready(function() {
     $('#visitorviewText').text('Currently there is no Live session');
 
     options = {
-      roomName: 'pandemia-parliament',
+      roomName: 'pandemia-covernment',
       parentNode: document.querySelector("#visitorview"),
       configOverwrite: {
         requireDisplayName: true,
@@ -236,7 +241,7 @@ $(document).ready(function() {
       $(".roster").html(container);
     });
 
-    options.roomName = 'pandemia-parliament-lobby'
+    options.roomName = 'pandemia-covernment-lobby'
     let api = new JitsiMeetExternalAPI(domain, options);
     api.executeCommand("displayName", username);
 
@@ -300,7 +305,54 @@ $(document).ready(function() {
 
   /////// SESSION
 
+  const _renderMembers = (members_in_session) => {
+    setTimeout(() => {
+      console.log('members: ', members_in_session)
+      let container = $('<div class="d-flex flex-column bd-highlight mb-3"/>');
+      for (clientId in members_in_session) {
+        const member = members_in_session[clientId];
+        const memberObj = members.find((m) => m.id == member.id);
+        if (uid === adminUid) {
+          // container.append('<button type="button" class="btn btn-light btn-sm member-btn m-1" id="' + clientId + '" name="' + member.username + '">' + member.username + '</button>');
+          container.append(
+            '<a href="#" class="btn btn-light btn-sm member-btn m-1" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' +
+            memberImage(member.id, memberObj.person_id) +
+            member.username +
+            '</a>');
+        } else {
+          container.append(
+            '<a href="#" class="btn btn-light btn-sm member-btn m-1 disabled" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' +
+            memberImage(member.id, memberObj.person_id) +
+            member.username +
+            '</a>');
+        }
+      }
+      $('.membersRoster')
+        .html(container);
+    }, members === undefined ? 1000 : 0);
+  }
+
+  /* const _startJits = (options) => {
+    let api = new JitsiMeetExternalAPI(domain, options);
+    api.executeCommand("displayName", username);
+  } */
+
   if (window.location.href.indexOf("session") > -1) {
+
+    if (uid != adminUid) {
+      options.interfaceConfigOverwrite = {
+        filmStripOnly: false,
+        // TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'raisehand'],
+        TOOLBAR_BUTTONS: ['camera', 'desktop'],
+        SETTINGS_SECTIONS: [],
+      };
+      $("#startVote").hide()
+    }
+
+    let api = new JitsiMeetExternalAPI(domain, options);
+    api.executeCommand("displayName", username);
+
+    let members_in_session
 
     let requestToTalkActive = false
     let voteStarted = false
@@ -313,8 +365,32 @@ $(document).ready(function() {
       transports: ["websocket"],
     });
 
+    socket.emit("adminUid");
+
+    socket.on("adminUid", (msg) => {
+      adminUid = msg
+    });
+
     socket.on("private", (msg) => {
-      console.log("private: ", msg)
+      if (msg === 'youwon') {
+        console.log(msg)
+        adminUid = uid
+        _renderMembers(members_in_session)
+        $("#startVote").show()
+
+        options.interfaceConfigOverwrite = {
+          filmStripOnly: false,
+          // TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'raisehand'],
+          TOOLBAR_BUTTONS: [
+            'microphone', 'camera', 'desktop', 'fullscreen',
+            'fodeviceselection', 'hangup', 'profile', 'chat',
+            'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
+            'videoquality', 'filmstrip', 'invite', 'stats',
+            'tileview',  'help', 'mute-everyone'
+          ],
+          SETTINGS_SECTIONS: [],
+        };
+      }
     });
 
     socket.emit("voteSession", {
@@ -383,21 +459,6 @@ $(document).ready(function() {
       $("#vote-skip").hide()
       return false;
     });
-
-    if (uid != adminUid) {
-      options.interfaceConfigOverwrite = {
-        filmStripOnly: false,
-        // TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'raisehand'],
-        TOOLBAR_BUTTONS: ['camera', 'desktop'],
-
-        SETTINGS_SECTIONS: [],
-      };
-      $("#startVote").hide()
-    }
-
-    let api = new JitsiMeetExternalAPI(domain, options);
-    api.executeCommand("displayName", username);
-
     
     const parliament = d3.parliament();
     console.log("parliament d3", parliament);
@@ -423,37 +484,25 @@ $(document).ready(function() {
 
     // Session socket.io
     socket.emit('joining', {username: username, id: uid});
-    socket.on('members', members_in_session => {
+
+    socket.on('members', msg => {
+      members_in_session = msg
       // as members may not have been loaded delay rendering... ...
-      setTimeout(() => {
-        console.log('members: ', members_in_session)
-        let container = $('<div class="d-flex flex-column bd-highlight mb-3"/>');
-        for (clientId in members_in_session) {
-          const member = members_in_session[clientId];
-          const memberObj = members.find((m) => m.id == member.id);
-          if (uid === adminUid) {
-            // container.append('<button type="button" class="btn btn-light btn-sm member-btn m-1" id="' + clientId + '" name="' + member.username + '">' + member.username + '</button>');
-            container.append(
-              '<a href="#" class="btn btn-light btn-sm member-btn m-1" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' +
-              memberImage(member.id, memberObj.person_id) +
-              member.username +
-              '</a>');
-          } else {
-            container.append(
-              '<a href="#" class="btn btn-light btn-sm member-btn m-1 disabled" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' +
-              memberImage(member.id, memberObj.person_id) +
-              member.username +
-              '</a>');
-          }
-        }
-        $('.membersRoster')
-          .html(container);
-      });
-    }, members === undefined ? 1000 : 0);
+      _renderMembers(members_in_session)
+    });
 
     socket.on("toggleMute", (message) => {
-      console.log("message: ", message);
       api.executeCommand("toggleAudio");
+      api.isAudioMuted().then(muted => {
+        if (muted){
+          $("#meet").removeClass("border");
+          $("#meet").removeClass("border-primary");
+        } else {
+          $("#meet").addClass("border");
+          $("#meet").addClass("border-primary");
+        }
+      });
+      //console.log("message: ", message);
       $("#requestToTalk").addClass("text-muted");
       $("#requestToTalk").removeClass("text-primary");
       requestToTalkActive = !requestToTalkActive

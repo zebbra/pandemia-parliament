@@ -219,6 +219,7 @@ let agenda = [
 
 let members = {};
 let sessionState = {started:false, voteStarted:false, agenda:agenda}
+let adminUid = 1346
 
 let votesession = {
   topic:'',
@@ -265,9 +266,9 @@ sessnp.on("connection", (socket) => {
   });
 
   socket.on('toggleRaiseHand', msg => {
-    const adminId = Object.keys(members).find(key => members[key].id === 1346);
-    console.log('toggleRaiseHand on : ', {msg:msg, adminId:adminId})
-    sessnp.to(adminId).emit('toggleRaiseHand', msg);
+    const adminSocketId = Object.keys(members).find(key => members[key].id === adminUid);
+    console.log('toggleRaiseHand on : ', {msg:msg, adminSocketId:adminSocketId})
+    sessnp.to(adminSocketId).emit('toggleRaiseHand', msg);
   });
 
   socket.on('vote', msg => {
@@ -295,18 +296,19 @@ sessnp.on("connection", (socket) => {
     }
 
     if (checkVotes() === 'yes'){
-      console.log(votesession.topic[0].candidate.id)
-      const msg = votesession.topic[0].candidate.id
-      console.log(members)
-      const socketID = Object.keys(members).find(key => members[key].id === parseInt(msg));
-      sessnp.to(`${socketID}`).emit('private', 'hey, you won the vote');
-
-
+      if (agenda[1].status === 'active'){
+        console.log(votesession.topic[0].candidate.id)
+        const msg = votesession.topic[0].candidate.id
+        adminUid = msg
+        console.log(members)
+        const socketID = Object.keys(members).find(key => members[key].id === parseInt(msg));
+        sessnp.to(`${socketID}`).emit('private', 'youwon');
+      }
     }
-    
+
     io.of('/session').emit('vote', votesession);
   });
-
+  
   socket.on('voteSession', () => {
     socket.emit('voteSession', votesession);
   });
@@ -330,6 +332,9 @@ sessnp.on("connection", (socket) => {
     socket.emit('getStateOfSession', sessionState);
   })
 
+  socket.on('adminUid', () => {
+    socket.emit('adminUid', adminUid);
+  })
 });
 
 //to get random value from object

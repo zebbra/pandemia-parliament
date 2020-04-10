@@ -5,8 +5,7 @@ const domain = [
   "together.lambda-it.ch",
 ][0];
 let options = {
-
-    roomName: 'pandemia-parliament',
+    roomName: 'pandemia-covernment',
     // width: 700,
     // height: 500,
     parentNode: document.querySelector('#meet'),
@@ -30,7 +29,7 @@ let options = {
     // }
 };
 
-const adminUid = 1346
+let adminUid = 1346
 const lobbyAdminUid = 1346
 /**
  * Make an element's height equal to its width and sets an event handler to keep doing it
@@ -116,6 +115,12 @@ if (!dev && location.protocol !== 'https:') {
   location.replace(`https:${location.href.substring(location.protocol.length)}`);
 }
 
+$.fn.redraw = function(){
+  $(this).each(function(){
+    var redraw = this.offsetHeight;
+  });
+};
+
 $(document).ready(function() {
 
   $(function () {
@@ -186,7 +191,7 @@ $(document).ready(function() {
     $('#visitorviewText').text('Currently there is no Live session');
 
     options = {
-      roomName: 'pandemia-parliament',
+      roomName: 'pandemia-covernment',
       parentNode: document.querySelector("#visitorview"),
       configOverwrite: {
         requireDisplayName: true,
@@ -213,6 +218,8 @@ $(document).ready(function() {
     });
   }
 
+  /////// Lobbbyy
+
   if (window.location.href.indexOf("lobby") > -1){
 
     squareThis('#meet', 0.67);
@@ -234,8 +241,9 @@ $(document).ready(function() {
       $(".roster").html(container);
     });
 
-    options.roomName = 'pandemia-parliament-lobby'
+    options.roomName = 'pandemia-covernment-lobby'
     let api = new JitsiMeetExternalAPI(domain, options);
+    api.executeCommand("displayName", username);
 
     $(".roster").on("click", ".roster-btn", (event) => {
       socket.emit("redirect", `${event.target.id}`);
@@ -247,7 +255,22 @@ $(document).ready(function() {
       getUrlParams(window.location.search);
       window.location.href = `/session?u=${username}&uid=${uid}`;
     });
+    
+    let count = 10
+    $('#countdown').text(count);
+
+    var x = setInterval(function() {
+      if (count > 0) {
+        count --
+        $('#countdown').text(count);
+      } else {
+        window.location.href = `/session?u=${username}&uid=${uid}`;
+      }
+    }, 1000);
+  
   }
+
+  /////// Overall
 
   $("#gotosession").click(() => {
     console.log("gotosession");
@@ -282,17 +305,113 @@ $(document).ready(function() {
 
   /////// SESSION
 
+  const _renderMembers = (members_in_session) => {
+    setTimeout(() => {
+      console.log('members: ', members_in_session)
+      let container = $('<div class="d-flex flex-column bd-highlight mb-3"/>');
+      for (clientId in members_in_session) {
+        const member = members_in_session[clientId];
+        const memberObj = members.find((m) => m.id == member.id);
+        if (uid === adminUid) {
+          // container.append('<button type="button" class="btn btn-light btn-sm member-btn m-1" id="' + clientId + '" name="' + member.username + '">' + member.username + '</button>');
+          container.append(
+            '<a href="#" class="btn btn-light btn-sm member-btn m-1" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' +
+            memberImage(member.id, memberObj.person_id) +
+            member.username +
+            '</a>');
+        } else {
+          container.append(
+            '<a href="#" class="btn btn-light btn-sm member-btn m-1 disabled" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' +
+            memberImage(member.id, memberObj.person_id) +
+            member.username +
+            '</a>');
+        }
+      }
+      $('.membersRoster')
+        .html(container);
+    }, members === undefined ? 1000 : 0);
+  }
+
+  /* const _startJits = (options) => {
+    let api = new JitsiMeetExternalAPI(domain, options);
+    api.executeCommand("displayName", username);
+  } */
+
   if (window.location.href.indexOf("session") > -1) {
+
+    $.confirm({
+        title: 'You are now in session',
+        content: 'The first topic of today is election of Council President, You will be able to vote down below. If you arrived late to the session another topic could be active. The agenda of the day is on the left side, members of parliament are listed on the rights side. If you want to adress some points please raise hand before talking. Have fun!',
+        type: 'blue',
+        buttons: {   
+            ok: {
+                text: "ok!",
+                btnClass: 'btn-primary',
+                keys: ['enter'],
+                action: function(){
+                    console.log('the user clicked confirm');
+                }
+            },
+
+        }
+    });
+
+    // Session socket.io
+    const socketurl = `${window.location.protocol}//${window.location.host}/session`;
+    const socket = io.connect(socketurl, {
+      transports: ["websocket"],
+    });
+    socket.emit("adminUid");
+
+    socket.on("adminUid", (msg) => {
+      adminUid = msg
+      if (uid === adminUid) {
+        $("#startVote").show()
+      }
+    });
+
+    if (uid != adminUid) {
+      options.interfaceConfigOverwrite = {
+        filmStripOnly: false,
+        // TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'raisehand'],
+        TOOLBAR_BUTTONS: ['camera', 'desktop'],
+        SETTINGS_SECTIONS: [],
+      };
+      $("#startVote").hide()
+    }
+
+    let api = new JitsiMeetExternalAPI(domain, options);
+    api.executeCommand("displayName", username);
+
+    let members_in_session
 
     let requestToTalkActive = false
     let voteStarted = false
 
     $(".votingElement").hide()
 
-    // Session socket.io
-    const socketurl = `${window.location.protocol}//${window.location.host}/session`;
-    const socket = io.connect(socketurl, {
-      transports: ["websocket"],
+    socket.on("private", (msg) => {
+      if (msg === 'youwon') {
+        console.log(msg)
+        adminUid = uid
+        _renderMembers(members_in_session)
+        $("#startVote").show()
+        $.confirm({
+          title: 'Congratulations',
+          content: 'You have been voted to be the Council President, you are now in admin mode which gives you the  the ability to let other members talks and initiate votes on other topics',
+          type: 'blue',
+          buttons: {   
+            ok: {
+                text: "ok!",
+                btnClass: 'btn-primary',
+                keys: ['enter'],
+                action: function(){
+                    console.log('the user clicked confirm');
+                }
+            },
+          }
+        })
+      }
     });
 
     socket.emit("voteSession", {
@@ -304,6 +423,7 @@ $(document).ready(function() {
     socket.on("vote", (msg) => {
       if (msg === 'reset'){
         console.log('vote reset')
+        voteStarted = false
         $(".votingElement").hide()
       } 
 
@@ -313,6 +433,7 @@ $(document).ready(function() {
         $("#vote-no").show()
         $("#vote-yes").show()
         $("#vote-skip").show()
+        
       }
       if (msg.pieData) {
         setVoteData(msg.pieData)
@@ -361,21 +482,6 @@ $(document).ready(function() {
       $("#vote-skip").hide()
       return false;
     });
-
-    if (uid != adminUid) {
-      options.interfaceConfigOverwrite = {
-        filmStripOnly: false,
-        // TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'raisehand'],
-        TOOLBAR_BUTTONS: ['camera', 'desktop', 'raisehand'],
-
-        SETTINGS_SECTIONS: [],
-      };
-      $("#startVote").hide()
-    }
-
-    let api = new JitsiMeetExternalAPI(domain, options);
-    api.executeCommand("displayName", username);
-
     
     const parliament = d3.parliament();
     console.log("parliament d3", parliament);
@@ -401,37 +507,25 @@ $(document).ready(function() {
 
     // Session socket.io
     socket.emit('joining', {username: username, id: uid});
-    socket.on('members', members_in_session => {
+
+    socket.on('members', msg => {
+      members_in_session = msg
       // as members may not have been loaded delay rendering... ...
-      setTimeout(() => {
-        console.log('members: ', members_in_session)
-        let container = $('<div class="d-flex flex-column bd-highlight mb-3"/>');
-        for (clientId in members_in_session) {
-          const member = members_in_session[clientId];
-          const memberObj = members.find((m) => m.id == member.id);
-          if (uid === adminUid) {
-            // container.append('<button type="button" class="btn btn-light btn-sm member-btn m-1" id="' + clientId + '" name="' + member.username + '">' + member.username + '</button>');
-            container.append(
-              '<a href="#" class="btn btn-light btn-sm member-btn m-1" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' +
-              memberImage(member.id, memberObj.person_id) +
-              member.username +
-              '</a>');
-          } else {
-            container.append(
-              '<a href="#" class="btn btn-light btn-sm member-btn m-1 disabled" tabindex="-1" role="button" aria-disabled="true" id="' + clientId + '">' +
-              memberImage(member.id, memberObj.person_id) +
-              member.username +
-              '</a>');
-          }
-        }
-        $('.membersRoster')
-          .html(container);
-      });
-    }, members === undefined ? 1000 : 0);
+      _renderMembers(members_in_session)
+    });
 
     socket.on("toggleMute", (message) => {
-      console.log("message: ", message);
       api.executeCommand("toggleAudio");
+      api.isAudioMuted().then(muted => {
+        if (muted){
+          $("#meet").removeClass("border");
+          $("#meet").removeClass("border-primary");
+        } else {
+          $("#meet").addClass("border");
+          $("#meet").addClass("border-primary");
+        }
+      });
+      //console.log("message: ", message);
       $("#requestToTalk").addClass("text-muted");
       $("#requestToTalk").removeClass("text-primary");
       requestToTalkActive = !requestToTalkActive
@@ -449,7 +543,7 @@ $(document).ready(function() {
         $(`#${message.id}`).addClass("btn-primary");
       } else {
         $(`#${message.id}`).removeClass("btn-primary");
-      }      
+      }
     });
 
     $("#sessionControl").on("click", "#requestToTalk", (event) => {
@@ -475,8 +569,10 @@ $(document).ready(function() {
 
     $("#sessionControl").on("click", "#startVote", (event) => {
       if (voteStarted) {
+        //End vote
         socket.emit("vote", "reset");
       } else {
+        //Start vote
         socket.emit("vote", "start");
         socket.emit("voteSession", {
           session: "session id",
@@ -484,6 +580,48 @@ $(document).ready(function() {
       } 
       voteStarted = !voteStarted
     });
+
+    ///// SELF-Service Demo
+    socket.emit("stateOfSession")
+    socket.on("stateOfSession" , (msg) => {
+      if (!msg.started){
+        socket.emit("startDemo")
+      }
+      //console.log(msg)
+      let container = $('<div class="list-group"/>');
+      for (item in msg.agenda) {
+        if (msg.agenda[item].status === 'done') {
+          container.append('<button class="btn-sm list-group-item list-group-item-action disabled">' + msg.agenda[item].name + '</button>');
+        }
+        if (msg.agenda[item].status === 'active') {
+          container.append('<button class="btn-sm list-group-item list-group-item-action active">' + msg.agenda[item].name + '</button>');
+        }
+        if (msg.agenda[item].status === 'up') {
+          container.append('<button class="btn-sm list-group-item list-group-item-action disabled">' + msg.agenda[item].name + '</button>');
+        }
+      }
+      $('#agenda').html(container);
+
+      if(msg.voteActive){
+        $("#startVote").click();
+        const topic = msg.agenda.filter(item => {
+          console.log(item.status)
+          return item.status === 'active'
+        })
+        if (topic[0].candidate){
+          $("#votingMessage").text(`Vote ${topic[0].candidate.username} for Council President`);
+        } else {
+          $("#votingMessage").text(`Vote active for topic: ${topic[0].name}`);
+        } 
+      }
+      if (!msg.voteActive) {
+        $("#votingMessage").text('')
+      }
+
+    })
+
+    //$("#startVote").click();
+    //$("#votingMessage").text('');
 
   }
 });

@@ -339,6 +339,37 @@ $(document).ready(function() {
 
   if (window.location.href.indexOf("session") > -1) {
 
+    $.confirm({
+        title: 'You are now in session',
+        content: 'The first topic of today is election of Council President, You will be able to vote down below. If you arrived late to the session another topic could be active. The agenda of the day is on the left side, members of parliament are listed on the rights side. If you want to adress some points please raise hand before talking. Have fun!',
+        type: 'blue',
+        buttons: {   
+            ok: {
+                text: "ok!",
+                btnClass: 'btn-primary',
+                keys: ['enter'],
+                action: function(){
+                    console.log('the user clicked confirm');
+                }
+            },
+
+        }
+    });
+
+    // Session socket.io
+    const socketurl = `${window.location.protocol}//${window.location.host}/session`;
+    const socket = io.connect(socketurl, {
+      transports: ["websocket"],
+    });
+    socket.emit("adminUid");
+
+    socket.on("adminUid", (msg) => {
+      adminUid = msg
+      if (uid === adminUid) {
+        $("#startVote").show()
+      }
+    });
+
     if (uid != adminUid) {
       options.interfaceConfigOverwrite = {
         filmStripOnly: false,
@@ -359,37 +390,27 @@ $(document).ready(function() {
 
     $(".votingElement").hide()
 
-    // Session socket.io
-    const socketurl = `${window.location.protocol}//${window.location.host}/session`;
-    const socket = io.connect(socketurl, {
-      transports: ["websocket"],
-    });
-
-    socket.emit("adminUid");
-
-    socket.on("adminUid", (msg) => {
-      adminUid = msg
-    });
-
     socket.on("private", (msg) => {
       if (msg === 'youwon') {
         console.log(msg)
         adminUid = uid
         _renderMembers(members_in_session)
         $("#startVote").show()
-
-        options.interfaceConfigOverwrite = {
-          filmStripOnly: false,
-          // TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'raisehand'],
-          TOOLBAR_BUTTONS: [
-            'microphone', 'camera', 'desktop', 'fullscreen',
-            'fodeviceselection', 'hangup', 'profile', 'chat',
-            'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
-            'videoquality', 'filmstrip', 'invite', 'stats',
-            'tileview',  'help', 'mute-everyone'
-          ],
-          SETTINGS_SECTIONS: [],
-        };
+        $.confirm({
+          title: 'Congratulations',
+          content: 'You have been voted to be the Council President, you are now in admin mode which gives you the  the ability to let other members talks and initiate votes on other topics',
+          type: 'blue',
+          buttons: {   
+            ok: {
+                text: "ok!",
+                btnClass: 'btn-primary',
+                keys: ['enter'],
+                action: function(){
+                    console.log('the user clicked confirm');
+                }
+            },
+          }
+        })
       }
     });
 
@@ -402,6 +423,7 @@ $(document).ready(function() {
     socket.on("vote", (msg) => {
       if (msg === 'reset'){
         console.log('vote reset')
+        voteStarted = false
         $(".votingElement").hide()
       } 
 
@@ -411,6 +433,7 @@ $(document).ready(function() {
         $("#vote-no").show()
         $("#vote-yes").show()
         $("#vote-skip").show()
+        
       }
       if (msg.pieData) {
         setVoteData(msg.pieData)
@@ -520,7 +543,7 @@ $(document).ready(function() {
         $(`#${message.id}`).addClass("btn-primary");
       } else {
         $(`#${message.id}`).removeClass("btn-primary");
-      }      
+      }
     });
 
     $("#sessionControl").on("click", "#requestToTalk", (event) => {
@@ -585,7 +608,6 @@ $(document).ready(function() {
           console.log(item.status)
           return item.status === 'active'
         })
-        console.log('topic[0].candidate.length', topic[0].candidate)
         if (topic[0].candidate){
           $("#votingMessage").text(`Vote ${topic[0].candidate.username} for Council President`);
         } else {

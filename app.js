@@ -229,12 +229,18 @@ let votesession = {
   },
 };
 
-
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
 
 const checkVotes = () => {
   const numberOfVotes = votesession.pieData.yes + votesession.pieData.skip + votesession.pieData.no
   if (numberOfVotes === Object.keys(members).length) {
     console.log('all have voted')
+    const highest = Math.max(votesession.pieData.yes,  votesession.pieData.skip, votesession.pieData.no);
+    const result = getKeyByValue(votesession.pieData, highest)
+    console.log('result: ', result)
+    return result
   }
 };
 
@@ -280,15 +286,22 @@ sessnp.on("connection", (socket) => {
 
     if (msg.voting === 'skip'){
       votesession.pieData.skip ++
-      checkVotes()
     }
     if (msg.voting === 'yes'){
       votesession.pieData.yes ++
-      checkVotes()
     }
     if (msg.voting === 'no'){
       votesession.pieData.no ++
-      checkVotes()
+    }
+
+    if (checkVotes() === 'yes'){
+      console.log(votesession.topic[0].candidate.id)
+      const msg = votesession.topic[0].candidate.id
+      console.log(members)
+      const socketID = Object.keys(members).find(key => members[key].id === parseInt(msg));
+      sessnp.to(`${socketID}`).emit('private', 'hey, you won the vote');
+
+
     }
     
     io.of('/session').emit('vote', votesession);

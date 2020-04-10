@@ -313,6 +313,10 @@ $(document).ready(function() {
       transports: ["websocket"],
     });
 
+    socket.on("private", (msg) => {
+      console.log("private: ", msg)
+    });
+
     socket.emit("voteSession", {
       session: "session id",
     });

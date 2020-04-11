@@ -343,7 +343,7 @@ $(document).ready(function() {
 
     $.confirm({
         title: 'You are now in session',
-        content: 'The first topic of today is election of Council President, You will be able to vote down below. If you arrived late to the session another topic could be active. The agenda of the day is on the left side, members of parliament are listed on the rights side. If you want to adress some points please raise hand before talking. Have fun!',
+        content: 'The first topic of today is election of Council President, You will be able to vote one the left side. If you arrived late to the session another topic could be active. The agenda of the day is on the left side, members of parliament are listed on the rights side. If you want to adress some points please raise hand before talking. Have fun!',
         type: 'blue',
         buttons: {   
             ok: {
@@ -539,8 +539,32 @@ $(document).ready(function() {
       api.isAudioMuted().then(muted => {
         if (muted){
           $("#meet").removeClass("border border-primary border-3");
+          $.confirm({
+            title: 'Muted',
+            content: 'You have been muted by the President of the Council, no one in the session can hear you.',
+            type: 'blue',
+            buttons: {   
+              ok: {
+                  text: "ok!",
+                  btnClass: 'btn-primary',
+                  keys: ['enter']
+              },
+            }
+          })
         } else {
           $("#meet").addClass("border border-primary border-3");
+          $.confirm({
+            title: 'Unmuted',
+            content: 'You have been unmuted by the President of the Council, now everyone in the session can hear you.',
+            type: 'blue',
+            buttons: {   
+              ok: {
+                  text: "ok!",
+                  btnClass: 'btn-primary',
+                  keys: ['enter']
+              },
+            }
+          })
         }
       });
       //console.log("message: ", message);
@@ -629,7 +653,7 @@ $(document).ready(function() {
         if (topic[0].candidate){
           $("#votingMessage").text(`Vote ${topic[0].candidate.username} for Council President`);
         } else {
-          $("#votingMessage").text(`Vote active for topic: ${topic[0].name}`);
+          $("#votingMessage").text(`Vote for ${topic[0].name}`);
         } 
       }
       if (!msg.voteActive) {

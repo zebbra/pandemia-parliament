@@ -32,12 +32,13 @@ const contactController = require('./controllers/contact');
 const welcomeController = require('./controllers/welcome');
 const registerController = require('./controllers/register');
 const visitorController = require('./controllers/visitor');
+const videoController = require('./controllers/video');
+
 
 /**
  * Create Express server.
  */
 const app = express();
-
 
 /**
  * Express configuration.
@@ -108,6 +109,7 @@ app.get('/visitor', visitorController.index);
 app.get('/register', registerController.index);
 app.get('/lobby', lobbyController.index);
 app.get('/session', sessionController.index);
+app.get('/video', videoController.index);
 
 // // letsencrypt
 // app.get('/.well-known/acme-challenge/:content', (req, res) => {

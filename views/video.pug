@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  .subpage
+    .container
+      a(href="/").menu
+        .logo
+
+      h1.text-center Pandemia Government
+      h2.subheader-subpage.text-center Welcome judges!
+  //- p.lead The Pandemia Parliament
+  - hr
+  .row
+    .col-md-1.text-center
+    .col-md-10.text-center
+      div#visitorview
+        iframe(width='1200' height='800' src='https://www.youtube.com/embed/wD1mOIx3DaE?autoplay=1&controls=0' frameborder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen='')
+  include partials/footer

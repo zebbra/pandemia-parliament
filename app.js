@@ -154,20 +154,24 @@ lobbynsp.on("connection", (socket) => {
 let agenda = [
   {
     name: 'Welcome',
-    status: 'done'
+    status: 'done',
+    id: 1
   },
   {
     name: 'Council President election',
     status: 'active',
-    candidate: ''
+    candidate: '',
+    id: 2
   },
   {
     name: 'Funding of pademia parliament',
-    status: 'up'
+    status: 'up',
+    id: 3
   },
   {
-    name: 'Funding of pademia parliament ballot',
-    status: 'up'
+    name: 'Livestock summer grazing.',
+    status: 'up',
+    id: 4
   },
 ]
 
@@ -260,12 +264,12 @@ sessnp.on("connection", (socket) => {
         const msg = votesession.topic[0].candidate.id
         adminUid = msg
         const socketID = Object.keys(members).find(key => members[key].id === parseInt(msg));
-        sessnp.to(`${socketID}`).emit('private', 'youwon');
         io.of('/session').emit('vote', 'reset');
         votesession.pieData = {yes: 0, no: 0, skip: 0};
         sessionState.voteActive = false
         _moveToNextTopic()
-        socket.emit('stateOfSession', sessionState);
+        io.of('/session').emit('notification', {voteResult:{agenda:{id:1}, winner:members[socketID]}});
+        io.of('/session').emit('stateOfSession', sessionState);
       }
     }
     io.of('/session').emit('vote', votesession);
@@ -330,7 +334,7 @@ sessnp.on("connection", (socket) => {
         skip: 0,
       },
     };
-    socket.emit('resetSession');
+    io.of('/session').emit('resetSession');
   })
 
 });

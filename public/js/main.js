@@ -392,27 +392,45 @@ $(document).ready(function() {
 
     $(".votingElement").hide()
 
-    socket.on("private", (msg) => {
-      if (msg === 'youwon') {
-        console.log(msg)
-        adminUid = uid
-        _renderMembers(members_in_session)
-        $("#startVote").show()
-        $.confirm({
-          title: 'Congratulations',
-          content: 'You have been voted to be the Council President, you are now in admin mode which gives you the  the ability to let other members talks and initiate votes on other topics',
-          type: 'blue',
-          buttons: {   
-            ok: {
-                text: "ok!",
-                btnClass: 'btn-primary',
-                keys: ['enter'],
-                action: function(){
-                    console.log('the user clicked confirm');
-                }
-            },
-          }
-        })
+    socket.on("notification", (msg) => {
+      if (msg.voteResult.agenda.id === 1) {
+        //Check if I am winner
+        if (msg.voteResult.winner.id === parseInt(uid)) {
+          adminUid = uid
+          _renderMembers(members_in_session)
+          $("#startVote").show()
+          $.confirm({
+            title: 'Congratulations',
+            content: 'You have been voted to be the Council President, you are now in admin mode which gives you the  the ability to let other members talks and initiate votes on other topics.',
+            type: 'blue',
+            buttons: {   
+              ok: {
+                  text: "ok!",
+                  btnClass: 'btn-primary',
+                  keys: ['enter'],
+                  action: function(){
+                      console.log('the user clicked confirm');
+                  }
+              },
+            }
+          })
+        } else {
+          $.confirm({
+            title: 'New President has been elected',
+            content: `By popular vote, the new President is ${msg.voteResult.winner.username}. Now you have the possibility to discuss over the next topic in the Agenda, If you wish to talk please raise your hand and the president can give you access to the floor.`,
+            type: 'blue',
+            buttons: {   
+              ok: {
+                  text: "ok!",
+                  btnClass: 'btn-primary',
+                  keys: ['enter'],
+                  action: function(){
+                      console.log('the user clicked confirm');
+                  }
+              },
+            }
+          })
+        }
       }
     });
 
@@ -520,11 +538,9 @@ $(document).ready(function() {
       api.executeCommand("toggleAudio");
       api.isAudioMuted().then(muted => {
         if (muted){
-          $("#meet").removeClass("border");
-          $("#meet").removeClass("border-primary");
+          $("#meet").removeClass("border border-primary border-3");
         } else {
-          $("#meet").addClass("border");
-          $("#meet").addClass("border-primary");
+          $("#meet").addClass("border border-primary border-3");
         }
       });
       //console.log("message: ", message);
@@ -621,9 +637,6 @@ $(document).ready(function() {
       }
 
     })
-
-    //$("#startVote").click();
-    //$("#votingMessage").text('');
     $('#resetSession').click(() => {
       socket.emit('resetSession')
     })

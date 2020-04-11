@@ -343,7 +343,7 @@ $(document).ready(function() {
 
     $.confirm({
         title: 'You are now in session',
-        content: 'The first topic of today is election of Council President, You will be able to vote one the left side. If you arrived late to the session another topic could be active. The agenda of the day is on the left side, members of parliament are listed on the rights side. If you want to adress some points please raise hand before talking. Have fun!',
+        content: 'The first topic of today is election of Council President, You will be able to vote one the left side. If you arrived late to the session another topic could be active. The agenda of the day is on the left side, members of parliament are listed on the rights side. If you want to adress some points please raise hand before talking. You can reset the session any time by clicking Reset Session down in the Footer. Have fun!',
         type: 'blue',
         buttons: {   
             ok: {

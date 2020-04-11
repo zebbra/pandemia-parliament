@@ -223,7 +223,42 @@ sessnp.on("connection", (socket) => {
   socket.on("disconnect", () => {
     delete members[socket.id];
     console.log(`Client gone form session [id=${socket.id}]`);
-    sessnp.emit('members', members);  });
+    sessnp.emit('members', members);
+    // reset session when everyone disconnects
+    if (Object.keys(members).length === 0 && members.constructor === Object){
+      agenda = [
+        {
+          name: 'Welcome',
+          status: 'done'
+        },
+        {
+          name: 'Council President election',
+          status: 'active',
+          candidate: ''
+        },
+        {
+          name: 'Funding of pademia parliament',
+          status: 'up'
+        },
+        {
+          name: 'Funding of pademia parliament ballot',
+          status: 'up'
+        },
+      ]
+      
+      sessionState = {started:false, voteActive:false, agenda:agenda}
+      adminUid = 1346
+      
+      votesession = {
+        topic:'',
+        pieData: {
+          yes: 0,
+          no: 0,
+          skip: 0,
+        },
+      };
+    }
+  });
 
   socket.on('toggleMute', msg => {
     const socketID = Object.keys(members).find(key => members[key].id === parseInt(msg));
@@ -338,7 +373,6 @@ sessnp.on("connection", (socket) => {
     };
     io.of('/session').emit('resetSession');
   })
-
 });
 
 //to get random value from object

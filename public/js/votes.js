@@ -50,8 +50,13 @@ const svg = d3
   .attr("transform", `translate(${width / 2},${height / 2})`);
 
 setVoteData = (data) => {
-  console.log('state.pieData', state.pieData)
   console.log('setVoteData: ', data)
+  console.log('state.pieData', state.pieData)
+
+  if (data.yes === 0 && data.no === 0 && data.skip === 0 ) {
+    return
+  }
+
   state.pieData = data;
   
   svg.selectAll("*").remove()

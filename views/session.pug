@@ -16,6 +16,8 @@ block content
       .row
         .col-md-2
           include partials/agenda
+          .votingElement.mt-3
+            include partials/vote
         .col-md-8
           div#meet(data-bar="foo")&attributes({'data-foo': 'bar'})
           .row.mt-2.d-flex.flex-row.justify-content-center#sessionControl
@@ -27,12 +29,4 @@ block content
           h4 Members Online
           div.membersRoster
             //a.btn.btn-raised(href='#', role='button') View details »
-      .row.mt-3
-        .col-md-12.text-center#votingMessage 
-      .row.mt-3.votingElement
-        .col-md-8.text-center
-          svg#d3-parliament-svg
-        .col-md-2
-          include partials/vote
-            doctype html
     include partials/footer

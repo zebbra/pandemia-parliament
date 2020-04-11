@@ -1,13 +1,15 @@
-div
-  .container.text-center
-    div.row.text-center
-      div.col.text-center
+div 
+  .container.text-center.border.bg-light
+    .row.text-center.m-1
+      .col.text-center.text-secondary#votingMessage
+    .row.text-center.mt-2
+      .col.text-center
         button#vote-yes.btn.btn-success.w-100 yes
-    div.row.text-center
-      div.col.text-center
+    .row.text-center
+      .col.text-center
         button#vote-no.btn.btn-danger.w-100 no
-    div.row.text-center
-      div.col.text-center
+    .row.text-center
+      .col.text-center
         button#vote-skip.btn.btn-info.w-100 skip
-    div.row.text-center.pt-3
-      div#votes-pie.w-100
+    .row.text-center.m-2.mt-3.mb-4
+      #votes-pie.w-100

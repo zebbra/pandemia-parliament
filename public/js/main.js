@@ -503,13 +503,13 @@ $(document).ready(function() {
       return false;
     });
     
-    const parliament = d3.parliament();
+/*     const parliament = d3.parliament();
     console.log("parliament d3", parliament);
     parliament.width(600).height(400).innerRadiusCoef(0.4);
     parliament.enter.fromCenter(true).smallToBig(true);
     parliament.exit.toCenter(false).bigToSmall(true);
 
-    /* register event listeners */
+    // register event listeners
     parliament.on("click", (d) => {
       alert(`You clicked on a seat of ${d.party.name}`);
     });
@@ -520,10 +520,10 @@ $(document).ready(function() {
       console.log(`mouse out of ${d.party.name}`);
     });
 
-    /* add the parliament to the page */
+    // add the parliament to the page
     d3.json("/data/parliament.json", (d) => {
       d3.select("svg").datum(d).call(parliament);
-    });
+    }); */
 
     // Session socket.io
     socket.emit('joining', {username: username, id: uid});

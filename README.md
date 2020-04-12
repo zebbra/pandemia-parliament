@@ -38,6 +38,7 @@ For this hackathon we build a simple ShowCase that gives an impression how an on
 * https://www.letemps.ch/suisse/democratie-numerique
 * https://www.republik.ch/2020/04/02/kinder-aus-lesbos-die-schweiz-sagt-nein-spitaeler-melden-kurz-arbeit-an-und-was-es-fuer-ein-digitales-parlament-braeuchte
 * https://www.nzz.ch/amp/schweiz/die-halbe-schweiz-arbeitet-von-zuhause-aus-nur-das-parlament-will-sich-weiterhin-physisch-treffen-ld.1549953
+* https://www.srf.ch/play/radio/echo-der-zeit/audio/digitale-demokratie-die-schweiz-hat-dies-etwas-verschlafen?id=66acd4d5-719d-4d03-bac8-da0561f54a8d
 
 ## Collaborators, Hackers, Thinkers
 

@@ -52,9 +52,10 @@ For this hackathon we build a simple ShowCase that gives an impression how an on
 
 ## Supporters - advisors, mentors, coaches
 
-* Here's a screenshot from all the very nice people that supported and advised us during the hackathon :) Thanks a lot!
+* Here's a screenshot from all the very nice people that have supported us from the beginning :) Thanks a lot!
 
 ![](public/assets/supporters.png)
+![](public/assets/supporters2.png)
 
 
 # Tech Stuff

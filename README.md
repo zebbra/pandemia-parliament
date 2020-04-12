@@ -1,13 +1,10 @@
-![](public/assets/logo_pandemia_parliament.png)
+![](public/assets/logo_11.png)
 
 # Into
 
 A video might say more than lots of words
 
-[![YouTube-Video1](https://img.youtube.com/vi/6EYLnA8p7dA/0.jpg)](https://www.youtube.com/watch?v=6EYLnA8p7dA)
-
-[![YouTube-Video2](https://img.youtube.com/vi/TEjx7UMNAlc/0.jpg)](https://www.youtube.com/watch?v=TEjx7UMNAlc)
-
+[![YouTube-Video1](http://i3.ytimg.com/vi/wD1mOIx3DaE/hqdefault.jpg)](https://www.youtube.com/watch?v=wD1mOIx3DaE&)
 
 ## What's this about?
 
@@ -23,7 +20,7 @@ We take the parliamentary process from the real-world and transfer it online. As
 The general public can join in from anywhere in the world and follow the process.
 For this hackathon we build a simple ShowCase that gives an impression how an online parliament could look like. All build on Open Source technology, protecting our sovereignty and guaranteeing a high level of security and transparency.
 
-![](public/assets/screenshot1.png)
+![](public/assets/screenshot2.png)
 
 # Contact
 
@@ -46,7 +43,7 @@ For this hackathon we build a simple ShowCase that gives an impression how an on
 | Kusi - Markus Roth | Ideator / Hacker | https://zebbra.ch / @MrChusiiii |
 | Felix Hoesch | Political Advisor | http://felix.hoesch.ch / @FelixZRH |
 | Lukas Frei | Hacker / Teacher / Politician | @LukasFreiLuzern |
-| Marek Paulson | Hacker | https://zebbra.ch|
+| Marek Paulson | Hacker | https://zebbra.ch / [LinkedIn](https://www.linkedin.com/in/marekpaulson/)|
 | Clau Dermont | Political Advisor | http://claudermont.ch @claudermont |
 | Patrick Stählin | Mentor / Hacker | https://patrickstaehlin.ch / @thepacki |
 | Jean-Henry Morin | Researcher | @jhmorin |

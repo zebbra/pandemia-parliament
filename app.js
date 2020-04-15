@@ -110,6 +110,7 @@ app.get('/register', registerController.index);
 app.get('/lobby', lobbyController.index);
 app.get('/session', sessionController.index);
 app.get('/video', videoController.index);
+app.get('/contact', contactController.getContact);
 
 // // letsencrypt
 // app.get('/.well-known/acme-challenge/:content', (req, res) => {

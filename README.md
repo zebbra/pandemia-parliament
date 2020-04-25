@@ -40,6 +40,7 @@ For this hackathon we build a simple ShowCase that gives an impression how an on
 * https://www.nzz.ch/amp/schweiz/die-halbe-schweiz-arbeitet-von-zuhause-aus-nur-das-parlament-will-sich-weiterhin-physisch-treffen-ld.1549953
 * https://www.srf.ch/play/radio/echo-der-zeit/audio/digitale-demokratie-die-schweiz-hat-dies-etwas-verschlafen?id=66acd4d5-719d-4d03-bac8-da0561f54a8d
 * https://www.washingtonpost.com/world/europe/uk-zoom-parliament/2020/04/22/d3a38682-8496-11ea-81a3-9690c9881111_story.html
+* https://youtu.be/t9acHEwZZZ4 Virtual Parliaments: Perspectives from Canada and the UK
 
 ## Collaborators, Hackers, Thinkers
 

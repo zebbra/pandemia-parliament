@@ -1,4 +1,4 @@
-![](public/assets/logo_11.png)
+![](public/assets/pandemia_logo.png)
 
 # Intro
 

@@ -41,7 +41,7 @@
     "fbgraph": "^1.4.4",
     "googleapis": "^48.0.0",
     "instagram-node": "^0.5.8",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "lob": "^6.0.6",
     "lodash": "^4.17.15",
     "lusca": "^1.6.1",

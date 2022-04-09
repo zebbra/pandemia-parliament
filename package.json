@@ -46,7 +46,7 @@
     "lodash": "^4.17.15",
     "lusca": "^1.6.1",
     "mailchecker": "^3.3.4",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "node-quickbooks": "^2.0.33",
